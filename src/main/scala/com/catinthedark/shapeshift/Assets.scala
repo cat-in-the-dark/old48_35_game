@@ -1,5 +1,6 @@
 package com.catinthedark.shapeshift
 
+import com.badlogic.gdx.graphics.Texture.TextureWrap
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter
 import com.badlogic.gdx.graphics.g2d.{Animation, TextureRegion}
@@ -28,7 +29,13 @@ object Assets {
       val body: Texture 
       val bodyFrames: Array[Array[TextureRegion]]
     }
-    
+
+    val floor = new Texture(Gdx.files.internal("textures/floor.png"))
+    floor.setWrap(TextureWrap.Repeat, TextureWrap.Repeat)
+    val tree1 = new Texture(Gdx.files.internal("textures/tree1.png"))
+    val tree2 = new Texture(Gdx.files.internal("textures/tree2.png"))
+    val tree3 = new Texture(Gdx.files.internal("textures/tree3.png"))
+
     object HunterThemePack extends ThemePack {
       override val winScreen: Texture = new Texture(Gdx.files.internal("textures/logo.png"))
       override val pairing: Texture = new Texture(Gdx.files.internal("textures/pairing.png"))
