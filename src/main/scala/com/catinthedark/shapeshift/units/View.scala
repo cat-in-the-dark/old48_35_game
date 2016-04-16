@@ -183,7 +183,7 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
     shapeRenderer.end()
 
     magicBatch managed { batch =>
-      magicBatch.drawWithDebug(shared.player.texture(delta), shared.player.rect, shared.player.physRect)
+      magicBatch.drawWithDebug(shared.player.texture(delta), shared.player.rect, shared.player.physRect, angle = shared.player.angle)
       enemyView.render(delta, batch)
     }
   }
