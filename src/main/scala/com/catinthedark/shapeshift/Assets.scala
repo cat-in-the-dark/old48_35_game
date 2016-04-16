@@ -25,13 +25,13 @@ object Assets {
     
     object GoodThemePack extends ThemePack {
       override val winScreen: Texture = new Texture(Gdx.files.internal("textures/logo.png"))
-      override val pairing: Texture = new Texture(Gdx.files.internal("textures/logo.png"))
+      override val pairing: Texture = new Texture(Gdx.files.internal("textures/pairing.png"))
       override val loseScreen: Texture = new Texture(Gdx.files.internal("textures/logo.png"))
     }
 
     object WolfThemePack extends ThemePack {
       override val winScreen: Texture = new Texture(Gdx.files.internal("textures/logo.png"))
-      override val pairing: Texture = new Texture(Gdx.files.internal("textures/logo.png"))
+      override val pairing: Texture = new Texture(Gdx.files.internal("textures/pairing.png"))
       override val loseScreen: Texture = new Texture(Gdx.files.internal("textures/logo.png"))
     }
 
