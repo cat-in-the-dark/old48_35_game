@@ -112,18 +112,12 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
     Gdx.gl.glClearColor(0, 0, 0, 0)
     Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
-    println(s"ppos: x=${shared.player.pos.x}, y=${shared.player.pos.y}")
-    println(s"epos: x=${shared.enemy.pos.x}, y=${shared.enemy.pos.y}")
-
-
     if (shared.player.pos.x > Const.Projection.width / 2
       && shared.player.pos.x < Const.Projection.mapWidth - Const.Projection.width / 2)
       camera.position.x = shared.player.pos.x
     if (shared.player.pos.y > Const.Projection.height / 2 &&
       shared.player.pos.y < Const.Projection.mapHeight - Const.Projection.height / 2)
       camera.position.y = shared.player.pos.y
-
-    println(s"cpos: x=${camera.position.x}, y=${camera.position.y}")
 
     camera.update()
     batch.setProjectionMatrix(camera.combined)
