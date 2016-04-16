@@ -4,10 +4,14 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter
 import com.badlogic.gdx.graphics.g2d.{Animation, TextureRegion}
 import com.badlogic.gdx.graphics.{Pixmap, Texture}
+import com.badlogic.gdx.maps.tiled.{TmxMapLoader, TiledMap}
 import com.badlogic.gdx.{Gdx, utils}
 import com.catinthedark.shapeshift.common.Const
 
 object Assets {
+  object Maps {
+    val map1: TiledMap = new TmxMapLoader().load("map.tmx")
+  }
   object Textures {
     val logo = new Texture(Gdx.files.internal("textures/logo.png"))
 
