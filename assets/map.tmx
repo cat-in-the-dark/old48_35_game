@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="32" tileheight="32" nextobjectid="80">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="32" tileheight="32" nextobjectid="84">
  <tileset firstgid="1" name="floor" tilewidth="256" tileheight="256" tilecount="1">
   <image source="textures/floor.png" width="256" height="256"/>
  </tileset>
@@ -21,7 +21,7 @@
   <object id="61" x="1048.12" y="1844.26" width="256" height="256">
    <ellipse/>
   </object>
-  <object id="62" x="493.23" y="2706.74" width="256" height="256">
+  <object id="62" x="390.697" y="2664.52" width="256" height="256">
    <ellipse/>
   </object>
   <object id="63" x="806.861" y="891.3" width="256" height="256">
@@ -42,6 +42,9 @@
   <object id="68" x="2507.71" y="1506.5" width="256" height="256">
    <ellipse/>
   </object>
+  <object id="83" x="28.8154" y="2929.9" width="256" height="256">
+   <ellipse/>
+  </object>
  </objectgroup>
  <objectgroup color="#ffff7f" name="tree2">
   <object id="69" x="1036.05" y="631.952" width="256" height="256">
@@ -60,6 +63,9 @@
    <ellipse/>
   </object>
   <object id="74" x="1964.88" y="2489.61" width="256" height="256">
+   <ellipse/>
+  </object>
+  <object id="82" x="1017.96" y="2767.05" width="256" height="256">
    <ellipse/>
   </object>
  </objectgroup>

@@ -1,7 +1,7 @@
 package com.catinthedark.shapeshift.units
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.{Color, GL20}
+import com.badlogic.gdx.graphics.{Texture, OrthographicCamera, Color, GL20}
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.maps.MapLayer
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType
 import com.catinthedark.shapeshift.Assets
 import com.catinthedark.lib._
 import com.catinthedark.shapeshift.common.Const
+import Magic.richifySpriteBatch
 
 /**
   * Created by over on 02.01.15.
@@ -18,10 +19,11 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
   val magicBatch = new MagicSpriteBatch(Const.debugEnabled())
 
   val enemyView = new EnemyView(shared, Const.UI.enemyYRange, Const.UI.enemyParallaxSpeed) with LocalDeferred
+  val camera = new OrthographicCamera(Const.Projection.width, Const.Projection.height);
 
-//  shared.shared0.networkControl.onMovePipe.ports += enemyView.onMove
-//  shared.shared0.networkControl.onShootPipe.ports += enemyView.onShoot
-//  shared.shared0.networkControl.onAlivePipe.ports += enemyView.onAlive
+  //  shared.shared0.networkControl.onMovePipe.ports += enemyView.onMove
+  //  shared.shared0.networkControl.onShootPipe.ports += enemyView.onShoot
+  //  shared.shared0.networkControl.onAlivePipe.ports += enemyView.onAlive
 
   override def onActivate() = {
 
@@ -47,12 +49,29 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
     shared.player.pos.y -= speed
   }
 
+  def layerToTexture(layerName: String) = layerName match {
+    case "tree1" => Assets.Textures.tree1
+    case "tree2" => Assets.Textures.tree2
+    case "tree3" => Assets.Textures.tree3
+    case _ => throw new RuntimeException(s"ooops. texture for layer $layerName not found")
+  }
+
+  def drawFloor() =
+    batch.managed { self =>
+      self.draw(Assets.Textures.floor, 0,0,0,0, 3200, 3200)
+    }
+
   def drawTreeLayer(layer: MapLayer) = {
     val trees = layer.getObjects.iterator()
-    while (trees.hasNext) {
-      val tree = trees.next()
-      val x = tree.getProperties.get("x", classOf[Float])
-      val y = tree.getProperties.get("y", classOf[Float])
+    val texture = layerToTexture(layer.getName)
+    batch.managed { self =>
+      while (trees.hasNext) {
+        val tree = trees.next()
+        val x = tree.getProperties.get("x", classOf[Float])
+        val y = tree.getProperties.get("y", classOf[Float])
+
+        self.drawCentered(texture, x, y)
+      }
     }
   }
 
@@ -60,15 +79,16 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
     Gdx.gl.glClearColor(0, 0, 0, 0)
     Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
-
-    magicBatch managed { batch =>
-      magicBatch.drawWithDebug(shared.player.texture(delta), shared.player.rect, shared.player.rect)
-    }
+    drawFloor()
 
     val layers = Assets.Maps.map1.getLayers
     drawTreeLayer(layers.get("tree1"))
     drawTreeLayer(layers.get("tree2"))
     drawTreeLayer(layers.get("tree3"))
+
+    magicBatch managed { batch =>
+      magicBatch.drawWithDebug(shared.player.texture(delta), shared.player.rect, shared.player.rect)
+    }
 
     val shapeRenderer = new ShapeRenderer()
     shapeRenderer.begin(ShapeType.Filled)
