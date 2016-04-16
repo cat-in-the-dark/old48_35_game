@@ -41,7 +41,7 @@ object Assets {
       override val pairing: Texture = new Texture(Gdx.files.internal("textures/pairing.png"))
       override val loseScreen: Texture = new Texture(Gdx.files.internal("textures/logo.png"))
       override val body: Texture = new Texture(Gdx.files.internal("textures/hunter_pack/body.png"))
-      override val bodyFrames = TextureRegion.split(body, 48, 48)  
+      override val bodyFrames = TextureRegion.split(body, 140, 180)
     }
 
     object WolfThemePack extends ThemePack {

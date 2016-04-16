@@ -2,7 +2,7 @@ package com.catinthedark.lib
 
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.{TextureRegion, SpriteBatch}
-import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.math.{Rectangle, Vector2}
 
 /**
   * Created by over on 13.12.14.

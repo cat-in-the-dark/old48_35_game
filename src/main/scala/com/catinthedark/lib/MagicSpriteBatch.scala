@@ -9,14 +9,24 @@ import com.badlogic.gdx.math.{Matrix4, Rectangle}
 class MagicSpriteBatch(debugOn: => Boolean) extends SpriteBatch {
   val debug = new ShapeRenderer()
 
-  def drawWithDebug(t: TextureRegion, viewPos: Rectangle, physPos: Rectangle): Unit = {
-    if (debugOn) debug.rect(physPos.x, physPos.y, physPos.width, physPos.height)
-    else draw(t, viewPos.x, viewPos.y)
+  def drawWithDebug(t: TextureRegion, viewPos: Rectangle, physPos: Rectangle, centerX: Boolean = true, centerY: Boolean = true): Unit = {
+    draw(t, viewPos.x - (if (centerX) t.getRegionWidth / 2 else 0),
+      viewPos.y - (if (centerX) t.getRegionHeight / 2 else 0))
+
+    if (debugOn) debug.rect(
+      physPos.x - (if (centerX) physPos.width / 2 else 0),
+      physPos.y - (if (centerX) physPos.height / 2 else 0),
+      physPos.width, physPos.height)
   }
 
-  def drawWithDebug(t: Texture, viewPos: Rectangle, physPos: Rectangle): Unit = {
-    if (debugOn) debug.rect(physPos.x, physPos.y, physPos.width, physPos.height)
-    else draw(t, viewPos.x, viewPos.y)
+  def drawWithDebugTex(t: Texture, viewPos: Rectangle, physPos: Rectangle, centerX: Boolean = true, centerY: Boolean = true): Unit = {
+    draw(t, viewPos.x - (if (centerX) t.getWidth / 2 else 0),
+      viewPos.y - (if (centerX) t.getHeight / 2 else 0))
+
+    if (debugOn) debug.rect(
+      physPos.x - (if (centerX) physPos.width / 2 else 0),
+      physPos.y - (if (centerX) physPos.height / 2 else 0),
+      physPos.width, physPos.height)
   }
 
   def managed(f: MagicSpriteBatch => Unit): Unit = {
@@ -31,6 +41,13 @@ class MagicSpriteBatch(debugOn: => Boolean) extends SpriteBatch {
     draw(tex,
       if (centerX) x - tex.getRegionWidth / 2 else x,
       if (centerY) y - tex.getRegionHeight / 2 else y)
+
+  def drawCircleCentered(t: Texture, x: Float, y: Float, rad: Float, centerX: Boolean = true, centerY: Boolean = true) = {
+    draw(t, x - (if (centerX) t.getWidth / 2 else 0),
+      y - (if (centerX) t.getHeight / 2 else 0))
+
+    if (debugOn) debug.circle(x, y, rad)
+  }
 
   override def setProjectionMatrix(projection: Matrix4): Unit = {
     super.setProjectionMatrix(projection)

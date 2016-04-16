@@ -48,7 +48,7 @@ case class Player(var pos: Vector2, var state: State, var frags: Int, pack: Play
   }
 
   def physRect: Rectangle = {
-    new Rectangle(pos.x, pos.y, Const.UI.enemyUpPhysWH().x, Const.UI.enemyUpPhysWH().y)
+    new Rectangle(pos.x, pos.y, Const.UI.playerUpPhysWH().x, Const.UI.playerUpPhysWH().y)
   }
 }
 

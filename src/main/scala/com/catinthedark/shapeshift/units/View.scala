@@ -180,12 +180,10 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
 
     magicBatch managed { batch =>
       trees.foreach(tree => {
-        magicBatch.drawCentered(tree.texture, tree.x, tree.y)
+        magicBatch.drawCircleCentered(tree.texture, tree.x, tree.y, Const.UI.treePhysRadius)
       })
 
-      //magicBatch.drawWithDebug(shared.player.texture(delta), shared.player.rect, shared.player.rect)
-
-      magicBatch.drawCentered(shared.player.texture(delta), shared.player.pos.x, shared.player.pos.y)
+      magicBatch.drawWithDebug(shared.player.texture(delta), shared.player.rect, shared.player.physRect)
       enemyView.render(delta, batch)
     }
   }
