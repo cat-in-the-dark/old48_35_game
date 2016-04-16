@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="32" tileheight="32" nextobjectid="80">
+ <tileset firstgid="1" name="floor" tilewidth="256" tileheight="256" tilecount="1">
+  <image source="textures/floor.png" width="256" height="256"/>
+ </tileset>
+ <layer name="Слой тайлов 1" width="100" height="100">
+  <data encoding="base64" compression="zlib">
+   eJztwTEBAAAAwqD1T+1lC6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAbnEAAAQ==
+  </data>
+ </layer>
+ <objectgroup color="#00aa00" name="tree1">
+  <object id="40" x="2882.99" y="2876.96" width="256" height="256">
+   <ellipse/>
+  </object>
+  <object id="59" x="2242.33" y="2616.27" width="256" height="256">
+   <ellipse/>
+  </object>
+  <object id="60" x="1518.56" y="1928.69" width="256" height="256">
+   <ellipse/>
+  </object>
+  <object id="61" x="1048.12" y="1844.26" width="256" height="256">
+   <ellipse/>
+  </object>
+  <object id="62" x="493.23" y="2706.74" width="256" height="256">
+   <ellipse/>
+  </object>
+  <object id="63" x="806.861" y="891.3" width="256" height="256">
+   <ellipse/>
+  </object>
+  <object id="64" x="1808.07" y="867.175" width="256" height="256">
+   <ellipse/>
+  </object>
+  <object id="65" x="2899.74" y="46.9095" width="256" height="256">
+   <ellipse/>
+  </object>
+  <object id="66" x="577.669" y="71.035" width="256" height="256">
+   <ellipse/>
+  </object>
+  <object id="67" x="270.07" y="1355.72" width="256" height="256">
+   <ellipse/>
+  </object>
+  <object id="68" x="2507.71" y="1506.5" width="256" height="256">
+   <ellipse/>
+  </object>
+ </objectgroup>
+ <objectgroup color="#ffff7f" name="tree2">
+  <object id="69" x="1036.05" y="631.952" width="256" height="256">
+   <ellipse/>
+  </object>
+  <object id="70" x="1783.94" y="1216.99" width="256" height="256">
+   <ellipse/>
+  </object>
+  <object id="71" x="1765.85" y="1802.04" width="256" height="256">
+   <ellipse/>
+  </object>
+  <object id="72" x="999.865" y="2139.79" width="256" height="256">
+   <ellipse/>
+  </object>
+  <object id="73" x="710.359" y="2519.77" width="256" height="256">
+   <ellipse/>
+  </object>
+  <object id="74" x="1964.88" y="2489.61" width="256" height="256">
+   <ellipse/>
+  </object>
+ </objectgroup>
+ <objectgroup color="#ff5500" name="tree3">
+  <object id="75" x="1476.34" y="1319.53" width="256" height="256">
+   <ellipse/>
+  </object>
+  <object id="76" x="1627.13" y="656.077" width="256" height="256">
+   <ellipse/>
+  </object>
+  <object id="77" x="1325.56" y="565.607" width="256" height="256">
+   <ellipse/>
+  </object>
+  <object id="78" x="541.481" y="1850.29" width="256" height="256">
+   <ellipse/>
+  </object>
+  <object id="79" x="2278.51" y="2314.7" width="256" height="256">
+   <ellipse/>
+  </object>
+ </objectgroup>
+</map>
