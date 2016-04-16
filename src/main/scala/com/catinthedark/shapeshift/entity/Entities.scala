@@ -5,7 +5,7 @@ import com.catinthedark.shapeshift.Assets.Animations.PlayerAnimationPack
 import com.catinthedark.shapeshift.common.Const
 import com.catinthedark.shapeshift.view._
 
-case class Enemy(var pos: Vector2, var state: State, var frags: Int, pack: PlayerAnimationPack) {
+case class Enemy(var pos: Vector2, var state: State, var frags: Int, pack: PlayerAnimationPack, var angle: Float) {
   var animationCounter = 0f
   
   def texture (delta: Float) = {
@@ -26,7 +26,7 @@ case class Enemy(var pos: Vector2, var state: State, var frags: Int, pack: Playe
     new Rectangle(pos.x, pos.y, Const.UI.enemyUpPhysWH().x, Const.UI.enemyUpPhysWH().y)
   }
 }
-case class Player(var pos: Vector2, var state: State, var frags: Int, pack: PlayerAnimationPack) {
+case class Player(var pos: Vector2, var state: State, var frags: Int, pack: PlayerAnimationPack, var angle: Float) {
 
   var animationCounter = 0f
   var coolDown = false

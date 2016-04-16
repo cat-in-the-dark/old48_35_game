@@ -18,10 +18,10 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
   val batch = new SpriteBatch()
   val magicBatch = new MagicSpriteBatch(Const.debugEnabled())
 
-  val enemyView = new EnemyView(shared, Const.UI.enemyYRange, Const.UI.enemyParallaxSpeed) with LocalDeferred
-  val camera = new OrthographicCamera(Const.Projection.width, Const.Projection.height);
+  val enemyView = new EnemyView(shared) with LocalDeferred
+  val camera = new OrthographicCamera(Const.Projection.width, Const.Projection.height)
 
-  //  shared.shared0.networkControl.onMovePipe.ports += enemyView.onMove
+  shared.shared0.networkControl.onMovePipe.ports += enemyView.onMove
   //  shared.shared0.networkControl.onShootPipe.ports += enemyView.onShoot
   //  shared.shared0.networkControl.onAlivePipe.ports += enemyView.onAlive
 
@@ -32,21 +32,25 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
   def onMoveLeft(u: Unit): Unit = {
     val speed = Const.gamerSpeed()
     shared.player.pos.x -= speed
+    shared.shared0.networkControl.move(shared.player.pos, shared.player.angle, idle = false)
   }
 
   def onMoveRight(u: Unit): Unit = {
     val speed = Const.gamerSpeed()
     shared.player.pos.x += speed
+    shared.shared0.networkControl.move(shared.player.pos, shared.player.angle, idle = false)
   }
 
   def onMoveForward(u: Unit): Unit = {
     val speed = Const.gamerSpeed()
     shared.player.pos.y += speed
+    shared.shared0.networkControl.move(shared.player.pos, shared.player.angle, idle = false)
   }
 
   def onMoveBackward(u: Unit): Unit = {
     val speed = Const.gamerSpeed()
     shared.player.pos.y -= speed
+    shared.shared0.networkControl.move(shared.player.pos, shared.player.angle, idle = false)
   }
 
   def layerToTexture(layerName: String) = layerName match {
@@ -88,6 +92,10 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
 
     magicBatch managed { batch =>
       magicBatch.drawWithDebug(shared.player.texture(delta), shared.player.rect, shared.player.rect)
+    }
+
+    magicBatch managed { batch =>
+      enemyView.render(delta, batch)
     }
 
     val shapeRenderer = new ShapeRenderer()

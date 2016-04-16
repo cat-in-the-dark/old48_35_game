@@ -15,8 +15,8 @@ class Shared1(val shared0: Shared0) {
   
   def init() = {
     if (shared0.networkControl.isServer)
-      (Player(Const.Balance.playerStartPos, IDLE, 0, Assets.Animations.HunterAnimationPack), Enemy(Const.Balance.playerStartPos, IDLE, 0, Assets.Animations.WolfAnimationPack))
+      (Player(Const.Balance.playerStartPos, IDLE, 0, Assets.Animations.HunterAnimationPack, 0), Enemy(Const.Balance.playerStartPos, IDLE, 0, Assets.Animations.WolfAnimationPack, 0))
     else
-      (Player(Const.Balance.playerStartPos, IDLE, 0, Assets.Animations.WolfAnimationPack), Enemy(Const.Balance.playerStartPos, IDLE, 0, Assets.Animations.HunterAnimationPack))
+      (Player(Const.Balance.playerStartPos, IDLE, 0, Assets.Animations.WolfAnimationPack, 0), Enemy(Const.Balance.playerStartPos, IDLE, 0, Assets.Animations.HunterAnimationPack, 0))
   }
 }
