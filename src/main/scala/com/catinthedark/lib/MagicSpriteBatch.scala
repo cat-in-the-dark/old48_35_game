@@ -8,12 +8,12 @@ import com.badlogic.gdx.math.{Matrix4, Rectangle}
 
 class MagicSpriteBatch(debugOn: => Boolean) extends SpriteBatch {
   val debug = new ShapeRenderer()
-  
+
   def drawWithDebug(t: TextureRegion, viewPos: Rectangle, physPos: Rectangle): Unit = {
     if (debugOn) debug.rect(physPos.x, physPos.y, physPos.width, physPos.height)
     else draw(t, viewPos.x, viewPos.y)
   }
-  
+
   def drawWithDebug(t: Texture, viewPos: Rectangle, physPos: Rectangle): Unit = {
     if (debugOn) debug.rect(physPos.x, physPos.y, physPos.width, physPos.height)
     else draw(t, viewPos.x, viewPos.y)
@@ -26,6 +26,11 @@ class MagicSpriteBatch(debugOn: => Boolean) extends SpriteBatch {
     end()
     debug.end()
   }
+
+  def drawCentered(tex: TextureRegion, x: Float, y: Float, centerX: Boolean = true, centerY: Boolean = true) =
+    draw(tex,
+      if (centerX) x - tex.getRegionWidth / 2 else x,
+      if (centerY) y - tex.getRegionHeight / 2 else y)
 
   override def setProjectionMatrix(projection: Matrix4): Unit = {
     super.setProjectionMatrix(projection)

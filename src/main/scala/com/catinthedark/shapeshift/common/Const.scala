@@ -69,6 +69,8 @@ object Const extends ConstDelegate {
   object Projection {
     val width = 1161F
     val height = 652F
+    val mapWidth = 3200f
+    val mapHeight = 3200f
     
     val enemyOffsetX = 20F
     val enemyViewPort = width - enemyOffsetX * 2

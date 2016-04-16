@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.maps.MapLayer
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType
+import com.badlogic.gdx.math.Vector2
 import com.catinthedark.shapeshift.Assets
 import com.catinthedark.lib._
 import com.catinthedark.shapeshift.common.Const
@@ -17,9 +18,13 @@ import Magic.richifySpriteBatch
 abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
   val batch = new SpriteBatch()
   val magicBatch = new MagicSpriteBatch(Const.debugEnabled())
+  val shapeRenderer = new ShapeRenderer()
 
   val enemyView = new EnemyView(shared) with LocalDeferred
   val camera = new OrthographicCamera(Const.Projection.width, Const.Projection.height)
+  camera.position.x = Const.Projection.width / 2
+  camera.position.y = Const.Projection.height / 2
+  camera.update()
 
   shared.shared0.networkControl.onMovePipe.ports += enemyView.onMove
   //  shared.shared0.networkControl.onShootPipe.ports += enemyView.onShoot
@@ -87,6 +92,24 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
     Gdx.gl.glClearColor(0, 0, 0, 0)
     Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
+    println(s"ppos: x=${shared.player.pos.x}, y=${shared.player.pos.y}")
+    println(s"epos: x=${shared.enemy.pos.x}, y=${shared.enemy.pos.y}")
+
+
+    if (shared.player.pos.x > Const.Projection.width / 2
+      && shared.player.pos.x < Const.Projection.mapWidth - Const.Projection.width / 2)
+      camera.position.x = shared.player.pos.x
+    if (shared.player.pos.y > Const.Projection.height / 2 &&
+      shared.player.pos.y < Const.Projection.mapHeight - Const.Projection.height / 2)
+      camera.position.y = shared.player.pos.y
+
+    println(s"cpos: x=${camera.position.x}, y=${camera.position.y}")
+
+    camera.update()
+    batch.setProjectionMatrix(camera.combined)
+    magicBatch.setProjectionMatrix(camera.combined)
+    shapeRenderer.setProjectionMatrix(camera.combined)
+
     drawFloor()
     enemyView.run(delta)
 
@@ -96,14 +119,10 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
     drawTreeLayer(layers.get("tree3"))
 
     magicBatch managed { batch =>
-      magicBatch.drawWithDebug(shared.player.texture(delta), shared.player.rect, shared.player.rect)
-    }
-
-    magicBatch managed { batch =>
+      magicBatch.drawCentered(shared.player.texture(delta), shared.player.pos.x, shared.player.pos.y)
       enemyView.render(delta, batch)
     }
 
-    val shapeRenderer = new ShapeRenderer()
     shapeRenderer.begin(ShapeType.Filled)
     shapeRenderer.setColor(Color.RED)
     var x = 500
