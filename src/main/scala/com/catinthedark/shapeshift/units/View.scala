@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType
 import com.badlogic.gdx.math.Vector2
 import com.catinthedark.shapeshift.Assets
 import com.catinthedark.shapeshift.common.Const
-import com.catinthedark.shapeshift.common.Const.Balance
+import com.catinthedark.shapeshift.common.Const.{UI, Balance}
 import com.catinthedark.shapeshift.entity.Tree
 import com.catinthedark.shapeshift.view._
 import com.catinthedark.lib._
@@ -109,8 +109,23 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
 //  }
 
   override def run(delta: Float) = {
-    Gdx.gl.glClearColor(0, 0, 0, 0)
+    //1. clear screen
+    Gdx.gl.glClearColor(UI.darknessRed, UI.darknessGreen, UI.darknessBlue, 0)
     Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
+
+    //2. clear our depth buffer with 1.0
+    Gdx.gl.glClearDepthf(1f)
+    Gdx.gl.glClear(GL20.GL_DEPTH_BUFFER_BIT)
+
+    //3. set the function to LESS
+    Gdx.gl.glDepthFunc(GL20.GL_LESS)
+
+    //4. enable depth writing
+    Gdx.gl.glEnable(GL20.GL_DEPTH_TEST)
+
+    //5. Enable depth writing, disable RGBA color writing
+    Gdx.gl.glDepthMask(true)
+    Gdx.gl.glColorMask(false, false, false, false)
 
     if (shared.player.pos.x > Const.Projection.width / 2
       && shared.player.pos.x < Const.Projection.mapWidth - Const.Projection.width / 2)
@@ -119,10 +134,30 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
       shared.player.pos.y < Const.Projection.mapHeight - Const.Projection.height / 2)
       camera.position.y = shared.player.pos.y
 
+    val playerScreenX = shared.player.pos.x - camera.position.x + Const.Projection.width / 2f
+    val playerScreenY = shared.player.pos.y - camera.position.y + Const.Projection.height / 2f
+
     camera.update()
     batch.setProjectionMatrix(camera.combined)
     magicBatch.setProjectionMatrix(camera.combined)
     shapeRenderer.setProjectionMatrix(camera.combined)
+
+    shapeRenderer.begin(ShapeType.Filled)
+
+    shapeRenderer.setColor(1f, 0f, 0f, 0.5f)
+    shapeRenderer.circle(shared.player.pos.x, shared.player.pos.y, shared.player.balance.maxRadius)
+
+    shapeRenderer.end()
+
+    //8. Enable RGBA color writing
+    //   (SpriteBatch.begin() will disable depth mask)
+    Gdx.gl.glColorMask(true, true, true, true)
+
+    //9. Make sure testing is enabled.
+    Gdx.gl.glEnable(GL20.GL_DEPTH_TEST)
+
+    //10. Now depth discards pixels outside our masked shapes
+    Gdx.gl.glDepthFunc(GL20.GL_EQUAL)
 
     drawFloor()
     enemyView.run(delta)
@@ -142,7 +177,7 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
       val distance = pos.dst(tree.x, tree.y)
       if (distance < maxRadius) {
         shapeRenderer.begin(ShapeType.Filled)
-        shapeRenderer.setColor(Color.BLACK)
+        shapeRenderer.setColor(UI.darknessColor)
 
         val alpha = Math.atan2(tree.y - pos.y, tree.x - pos.x)
         val beta = Math.asin(Balance.treeRadius / distance)
@@ -150,10 +185,10 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
         val y1 = (pos.y + distance * Math.sin(alpha - beta)).toFloat
         val x2 = (pos.x + distance * Math.cos(alpha + beta)).toFloat
         val y2 = (pos.y + distance * Math.sin(alpha + beta)).toFloat
-        val x3 = (x2 + (maxRadius - distance) * Math.cos(alpha + beta)).toFloat
-        val y3 = (y2 + (maxRadius - distance) * Math.sin(alpha + beta)).toFloat
-        val x4 = (x1 + (maxRadius - distance) * Math.cos(alpha - beta)).toFloat
-        val y4 = (y1 + (maxRadius - distance) * Math.sin(alpha - beta)).toFloat
+        val x3 = (x2 + (UI.rayLength - distance) * Math.cos(alpha + beta)).toFloat
+        val y3 = (y2 + (UI.rayLength - distance) * Math.sin(alpha + beta)).toFloat
+        val x4 = (x1 + (UI.rayLength - distance) * Math.cos(alpha - beta)).toFloat
+        val y4 = (y1 + (UI.rayLength - distance) * Math.sin(alpha - beta)).toFloat
 
         shapeRenderer.triangle(x1, y1, x2, y2, x3, y3)
         shapeRenderer.triangle(x1, y1, x3, y3, x4, y4)
@@ -166,20 +201,18 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
     })
 
     shapeRenderer.begin(ShapeType.Filled)
-    shapeRenderer.setColor(Color.BLACK)
+    shapeRenderer.setColor(UI.darknessColor)
 
-    var x = shared.player.pos.x - camera.position.x + Const.Projection.width / 2f
-    var y = shared.player.pos.y - camera.position.y + Const.Projection.height / 2f
-    var x1 = Const.Projection.calcX(Gdx.input.getX())
-    var y1 = Const.Projection.height - Const.Projection.calcY(Gdx.input.getY())
+    val x1 = Const.Projection.calcX(Gdx.input.getX())
+    val y1 = Const.Projection.height - Const.Projection.calcY(Gdx.input.getY())
     var phi = shared.player.balance.viewAngle
-    var dx = x1 - x
-    var dy = y1 - y
+    var dx = x1 - playerScreenX
+    var dy = y1 - playerScreenY
     var alpha = Math.atan2(dy, dx) * 180 / Math.PI
     shared.player.angle = alpha.toFloat
     var start = alpha + phi / 2
     var degrees = 360 - phi
-    shapeRenderer.arc(shared.player.pos.x, shared.player.pos.y, shared.player.balance.maxRadius, start.toFloat, degrees)
+    shapeRenderer.arc(shared.player.pos.x, shared.player.pos.y, shared.player.balance.maxRadius + 2, start.toFloat, degrees)
     shapeRenderer.end()
 
     magicBatch managed { batch =>

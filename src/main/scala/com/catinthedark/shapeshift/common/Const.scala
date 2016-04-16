@@ -2,6 +2,8 @@ package com.catinthedark.shapeshift.common
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.math.{Rectangle, Vector2}
+import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.math.Vector2
 import com.catinthedark.lib.constants.ConstDelegate
 
 /**
@@ -52,6 +54,14 @@ object Const extends ConstDelegate {
 
     val enemyUpPhysWH = vec2Range("enemy up phys width height", new Vector2(120, 150))
     val treePhysRadius = 180f / 2
+
+    val rayLength = 1000
+
+    val darknessRed = 0.04f
+    var darknessGreen = 0.04f
+    var darknessBlue = 0.157f
+
+    val darknessColor = new Color(darknessRed, darknessGreen, darknessBlue, 0);
   }
 
   object HUD {
@@ -98,7 +108,7 @@ object Const extends ConstDelegate {
 
     object wolfBalance extends playerBalance {
       override val maxRadius: Int = 750
-      override val viewAngle: Int = 200
+      override val viewAngle: Int = 150
     }
   }
 
