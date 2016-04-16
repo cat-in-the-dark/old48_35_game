@@ -2,6 +2,7 @@ package com.catinthedark.shapeshift.network
 
 import java.util.concurrent.ConcurrentLinkedQueue
 
+import com.badlogic.gdx.math.Vector2
 import com.catinthedark.lib.Pipe
 import com.catinthedark.shapeshift.common.Const
 import org.zeromq.ZMQ
@@ -15,30 +16,27 @@ trait NetworkControl extends Runnable {
   val ILOOSE_PREFIX = "ILOOSE"
   val IWON_PREFIX = "IWON"
   val HELLO_PREFIX = "HELLO"
-  val PROGRESS_PREFIX = "PROGRESS"
   val ALIVE_PREFIX = "ALIVE"
 
   val buffer = new ConcurrentLinkedQueue[String]()
   val bufferIn = new ConcurrentLinkedQueue[() => Unit]()
 
-  val onMovePipe = new Pipe[(Float, Boolean)]()
+  val onMovePipe = new Pipe[(Vector2, Float, Boolean)]()
   val onShootPipe = new Pipe[Boolean]()
   val onILoosePipe = new Pipe[Unit]()
   val onIWonPipe = new Pipe[Unit]()
-  val onProgressPipe = new Pipe[Int]()
   val onAlivePipe = new Pipe[Unit]()
 
-  def onMove(msg: (Float, Boolean)) = bufferIn.add(() => onMovePipe(msg))
+  def onMove(msg: (Vector2, Float, Boolean)) = bufferIn.add(() => onMovePipe(msg))
   def onShoot(msg: Boolean) = bufferIn.add(() => onShootPipe(msg))
   def onILoose() = bufferIn.add(() => onILoosePipe())
   def onIWon() = bufferIn.add(() => onIWonPipe())
-  def onProgress(msg: Int) = bufferIn.add(() => onProgressPipe(msg))
   def onAlive() = bufferIn.add(() => onAlivePipe())
   
   def onHello(pushSocket: Socket) = println("Received hello package")
 
-  def move(x: Float, standUp: Boolean): Unit = {
-    buffer.add(s"$MOVE_PREFIX:$x;$standUp")
+  def move(pos: Vector2, angle: Float, idle: Boolean): Unit = {
+    buffer.add(s"$MOVE_PREFIX:${pos.x};${pos.y};$angle;$idle")
   }
 
   def shoot(exactly: Boolean): Unit = {
@@ -53,9 +51,6 @@ trait NetworkControl extends Runnable {
     buffer.add(s"$IWON_PREFIX:")
   }
 
-  def progress(progress: Int): Unit = {
-    buffer.add(s"$PROGRESS_PREFIX:$progress")
-  }
   def iAlive(): Unit = {
     buffer.add(s"$ALIVE_PREFIX:")
   }
@@ -83,9 +78,10 @@ trait NetworkControl extends Runnable {
           data(0) match {
             case MOVE_PREFIX =>
               val attrs = data(1).split(";")
-              val x = attrs(0).toFloat
-              val standUp = attrs(1).toBoolean
-              onMove(x, standUp)
+              val pos = new Vector2(attrs(0).toFloat, attrs(1).toFloat)
+              val angle = attrs(2).toFloat
+              val idle = attrs(3).toBoolean
+              onMove(pos, angle, idle)
             case SHOOT_PREFIX =>
               val attrs = data(1).split(";")
               val exactly = attrs(0).toBoolean
@@ -99,10 +95,6 @@ trait NetworkControl extends Runnable {
             case HELLO_PREFIX =>
               onHello(pushSocket)
               isConnected = Some()
-            case PROGRESS_PREFIX =>
-              val attrs = data(1).split(";")
-              val progress = attrs(0).toInt
-              onProgress(progress)
             case ALIVE_PREFIX =>
               println("enemy alive")
               onAlive()

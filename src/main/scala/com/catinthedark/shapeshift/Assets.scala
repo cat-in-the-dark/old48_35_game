@@ -41,7 +41,7 @@ object Assets {
       override val winScreen: Texture = new Texture(Gdx.files.internal("textures/logo.png"))
       override val pairing: Texture = new Texture(Gdx.files.internal("textures/pairing.png"))
       override val loseScreen: Texture = new Texture(Gdx.files.internal("textures/logo.png"))
-      override val body: Texture = new Texture(Gdx.files.internal("textures/hunter_pack/body.png"))
+      override val body: Texture = new Texture(Gdx.files.internal("textures/woolf_pack/body.png"))
       override val bodyFrames = TextureRegion.split(body, 48, 48)
     }
 
@@ -83,7 +83,7 @@ object Assets {
 
     object WolfAnimationPack extends PlayerAnimationPack {
       override val running: Animation = loopingAnimation(Textures.WolfThemePack.bodyFrames, (0,0), (0, 1), (0, 2))
-      override val idle: TextureRegion = Textures.HunterThemePack.bodyFrames(0)(1)
+      override val idle: TextureRegion = Textures.WolfThemePack.bodyFrames(0)(1)
     }
   }
 
