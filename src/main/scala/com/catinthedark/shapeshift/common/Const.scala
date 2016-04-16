@@ -13,18 +13,14 @@ object Const extends ConstDelegate {
     UI.playerMinX,
     HUD.myFragsPos,
     HUD.enemyFragsPos,
-    UI.upbarPos,
     HUD.ctrl1Pos,
-    HUD.ctrl2Pos,
-    Balance.progressDownSpeed
+    HUD.ctrl2Pos
   )
 
   val debugEnabled = onOff("debug render", false)
 
   object UI {
     val animationSpeed = 0.2f
-
-    val skyPos = vec2Range("sky pos", new Vector2(0, 91))
 
     val enemyYRange = vec2Range("enemy parallax move", new Vector2(303, 415))
     val enemyParallaxSpeed = frange("enemy parallax speed", 793, Some(300), Some(1000f))
@@ -43,8 +39,7 @@ object Const extends ConstDelegate {
 
     val enemyHedgeYRange = vec2Range("enemy hedge parallax move", new Vector2(247, 290))
     val enemyHedgeParallaxSpeed = frange("enemy hedge parallax move", 720, Some(500), Some(1000))
-
-
+    
     val playerY = frange("player y", 10, Some(0), Some(500))
     val playerMinX = frange("player min x", 41, Some(0), Some(500))
     val playerUpWH = vec2Range("player up width height", new Vector2(320, 360))
@@ -55,17 +50,6 @@ object Const extends ConstDelegate {
     val enemyDownWH = vec2Range("enemy down width height", new Vector2(80, 96))
 
     val enemyUpPhysWH = vec2Range("enemy up phys width height", new Vector2(80, 96))
-    
-    val pumpPosition = vec2Range("pump position", new Vector2(58, 14))
-    val pumpEpsilon = frange("pump epsilon", 10, Some(0), Some(50))
-
-    val plantPos = vec2Range("plant pos", new Vector2(900, 9))
-    val plantEpsilon = frange("plant epsilon", 10, Some(0), Some(50))
-
-    val hatSpeed = 600
-    val upbarPos = vec2Range("upbar pos", new Vector2(0, 581))
-    val waterbarPos = vec2Range("waterbar pos", new Vector2(14, 14))
-
   }
 
   object HUD {
@@ -96,16 +80,6 @@ object Const extends ConstDelegate {
   }
 
   object Balance {
-    val progressLevels = 3
-    val maxProgress = 350
-    val initialProgress = maxProgress / 5
-    val bucketVolume = 100
-    val playerCooldown: Float = 0.5f
-    val weaponCooldown: Float = 1.5f
-    val restoreCooldown: Float = 2f
-    val waterSpeed = irange("water in speed", 5, Some(1), Some(20))
-    val waterOutSpeed = irange("water out speed", 20, Some(1), Some(50))
-    val progressDownSpeed = irange("progress down speed", 1, Some(0), Some(50))
   }
 
   val serverPullPort = 9000

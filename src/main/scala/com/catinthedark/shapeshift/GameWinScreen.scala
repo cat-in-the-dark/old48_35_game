@@ -7,7 +7,7 @@ import com.catinthedark.lib.{KeyAwaitState, Stub, TextureState}
 class GameWinScreen(val shared: Shared0) extends Stub("GameWin") with TextureState with KeyAwaitState {
   override val keycode: Int = Input.Keys.ENTER
   override val texture: Texture = if (shared.networkControl.isServer) {
-    Assets.Textures.GoodThemePack.winScreen
+    Assets.Textures.HunterThemePack.winScreen
   } else {
     Assets.Textures.WolfThemePack.winScreen
   }

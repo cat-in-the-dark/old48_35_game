@@ -21,18 +21,24 @@ object Assets {
       val winScreen: Texture
       val pairing: Texture
       val loseScreen: Texture
+      val body: Texture 
+      val bodyFrames: Array[Array[TextureRegion]]
     }
     
-    object GoodThemePack extends ThemePack {
+    object HunterThemePack extends ThemePack {
       override val winScreen: Texture = new Texture(Gdx.files.internal("textures/logo.png"))
       override val pairing: Texture = new Texture(Gdx.files.internal("textures/pairing.png"))
       override val loseScreen: Texture = new Texture(Gdx.files.internal("textures/logo.png"))
+      override val body: Texture = new Texture(Gdx.files.internal("textures/hunter_pack/body.png"))
+      override val bodyFrames = TextureRegion.split(body, 48, 48)  
     }
 
     object WolfThemePack extends ThemePack {
       override val winScreen: Texture = new Texture(Gdx.files.internal("textures/logo.png"))
       override val pairing: Texture = new Texture(Gdx.files.internal("textures/pairing.png"))
       override val loseScreen: Texture = new Texture(Gdx.files.internal("textures/logo.png"))
+      override val body: Texture = new Texture(Gdx.files.internal("textures/hunter_pack/body.png"))
+      override val bodyFrames = TextureRegion.split(body, 48, 48)
     }
 
   }
@@ -61,7 +67,17 @@ object Assets {
       new Animation(speed, array, Animation.PlayMode.NORMAL)
     }
     
-    trait PlayerAnimationPack
+    trait PlayerAnimationPack {
+      val running: Animation
+    }
+    
+    object HunterAnimationPack extends PlayerAnimationPack {
+      override val running: Animation = loopingAnimation(Textures.HunterThemePack.bodyFrames, (0,0), (0, 1), (0, 2))
+    }
+
+    object WolfAnimationPack extends PlayerAnimationPack {
+      override val running: Animation = loopingAnimation(Textures.WolfThemePack.bodyFrames, (0,0), (0, 1), (0, 2))
+    }
   }
 
   object Audios {

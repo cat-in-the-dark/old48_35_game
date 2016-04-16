@@ -5,11 +5,14 @@ import com.catinthedark.shapeshift.Assets.Animations.PlayerAnimationPack
 import com.catinthedark.shapeshift.common.Const
 import com.catinthedark.shapeshift.view._
 
-case class Enemy(var x: Float, var state: State, var frags: Int, pack: PlayerAnimationPack,
-                 var progress: Int = Const.Balance.initialProgress) {
+case class Enemy(var x: Float, var state: State, var frags: Int, pack: PlayerAnimationPack) {
   var animationCounter = 0f
   
   def texture (delta: Float) = {
+    state match {
+      case _ =>
+        pack.running
+    }
 //    state match {
 //      case UP => pack.up
 //      case SHOOTING =>
@@ -40,13 +43,17 @@ case class Enemy(var x: Float, var state: State, var frags: Int, pack: PlayerAni
     }
   }
 }
-case class Player(var x: Float, var state: State, var frags: Int, pack: PlayerAnimationPack, var water: Int = 0,
-                 var progress: Int = Const.Balance.initialProgress, var progressLevel: Int = 0) {
+case class Player(var x: Float, var state: State, var frags: Int, pack: PlayerAnimationPack, var water: Int = 0) {
 
   var animationCounter = 0f
   var coolDown = false
 
   def texture (delta: Float) = {
+    state match {
+      case _ =>
+        animationCounter += delta
+        pack.running
+    }
 //    state match {
 //      case UP => pack.up
 //      case SHOOTING =>

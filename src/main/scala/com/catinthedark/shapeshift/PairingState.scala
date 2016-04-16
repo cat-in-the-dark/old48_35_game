@@ -45,7 +45,7 @@ class PairingState(shared0: Shared0, name: String) extends Stub(name) with Textu
   }
 
   override val texture: Texture = if (shared0.networkControl.isServer) {
-    Assets.Textures.GoodThemePack.pairing
+    Assets.Textures.HunterThemePack.pairing
   } else {
     Assets.Textures.WolfThemePack.pairing
   }
