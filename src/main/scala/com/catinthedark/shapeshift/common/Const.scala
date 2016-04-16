@@ -82,6 +82,19 @@ object Const extends ConstDelegate {
 
   object Balance {
     val playerStartPos = new Vector2(0f, 0f)
+    val treeRadius = 50
+
+    trait playerBalance {
+      val maxRadius: Int
+    }
+
+    object hunterBalance extends playerBalance {
+      override val maxRadius: Int = 400
+    }
+
+    object wolfBalance extends playerBalance {
+      override val maxRadius: Int = 750
+    }
   }
 
   val serverPullPort = 9000
