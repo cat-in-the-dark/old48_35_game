@@ -1,8 +1,8 @@
 package com.catinthedark.shapeshift.network
 
 import com.catinthedark.shapeshift.common.Const
-import org.zeromq.ZMQ.{Socket, Poller, PollItem}
-import org.zeromq.{ZMQ, ZContext}
+import org.zeromq.ZMQ.Socket
+import org.zeromq.{ZContext, ZMQ}
 
 class NetworkServerControl extends NetworkControl {
   override def onHello(pushSocket: Socket) = pushSocket.send(s"$HELLO_PREFIX:")

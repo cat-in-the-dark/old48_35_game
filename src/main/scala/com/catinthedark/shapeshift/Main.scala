@@ -3,11 +3,9 @@ package com.catinthedark.shapeshift
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.{Game, Gdx, Input}
 import com.catinthedark.lib._
+
 import scala.util.Random
 
-/**
-  * Created by over on 13.12.14.
-  */
 class Main(address: String) extends Game {
   val rm = new RouteMachine()
 
@@ -29,13 +27,13 @@ class Main(address: String) extends Game {
   override def create() = {
 
     val logo = delayed("Logo", Assets.Textures.logo, 1.0f)
-    val t0 = keyAwait("start", Assets.Textures.t0)
-    val t1 = keyAwait("Tutorial1", Assets.Textures.t1)
-    val t2 = keyAwait("Tutorial2", Assets.Textures.t2)
-    val t3 = keyAwait("Tutorial3", Assets.Textures.t3)
-    val t4 = keyAwait("Tutorial4", Assets.Textures.t4)
-    val t5 = keyAwait("Tutorial4", Assets.Textures.t5)
-    val t6 = keyAwait("Tutorial4", Assets.Textures.t6)
+//    val t0 = keyAwait("start", Assets.Textures.t0)
+//    val t1 = keyAwait("Tutorial1", Assets.Textures.t1)
+//    val t2 = keyAwait("Tutorial2", Assets.Textures.t2)
+//    val t3 = keyAwait("Tutorial3", Assets.Textures.t3)
+//    val t4 = keyAwait("Tutorial4", Assets.Textures.t4)
+//    val t5 = keyAwait("Tutorial4", Assets.Textures.t5)
+//    val t6 = keyAwait("Tutorial4", Assets.Textures.t6)
 
     shared = new Shared0(address)
 
@@ -45,14 +43,15 @@ class Main(address: String) extends Game {
     val gameOver = new GameOverState(shared)
     val gameWin = new GameWinScreen(shared)
 
-    rm.addRoute(logo, anyway => t0)
-    rm.addRoute(t0, anyway => t1)
-    rm.addRoute(t1, anyway => t2)
-    rm.addRoute(t2, anyway => t3)
-    rm.addRoute(t3, anyway => t4)
-    rm.addRoute(t4, anyway => t5)
-    rm.addRoute(t5, anyway => t6)
-    rm.addRoute(t6, anyway => pairing)
+//    rm.addRoute(logo, anyway => t0)
+//    rm.addRoute(t0, anyway => t1)
+//    rm.addRoute(t1, anyway => t2)
+//    rm.addRoute(t2, anyway => t3)
+//    rm.addRoute(t3, anyway => t4)
+//    rm.addRoute(t4, anyway => t5)
+//    rm.addRoute(t5, anyway => t6)
+//    rm.addRoute(t6, anyway => pairing)
+    rm.addRoute(logo, anyway => pairing)
     rm.addRoute(pairing, anyway => game)
     rm.addRoute(game, res => {
       res match {
@@ -62,17 +61,16 @@ class Main(address: String) extends Game {
     })
 
     rm.addRoute(gameWin, anyway => {
-      t1
+      pairing
     })
     rm.addRoute(gameOver, anyway => {
-      t1
+      pairing
     })
 
     rm.start(logo)
   }
 
   override def render() = {
-    Gdx.graphics.setCursor(Assets.cursor)
     rm.run(Gdx.graphics.getDeltaTime)
   }
 

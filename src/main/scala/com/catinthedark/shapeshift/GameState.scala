@@ -1,8 +1,8 @@
 package com.catinthedark.shapeshift
 
+import com.catinthedark.lib.{LocalDeferred, YieldUnit}
 import com.catinthedark.shapeshift.common.Const
 import com.catinthedark.shapeshift.units._
-import com.catinthedark.lib.{Interval, LocalDeferred, YieldUnit}
 
 /**
   * Created by over on 18.04.15.
@@ -11,21 +11,11 @@ class GameState(shared0: Shared0) extends YieldUnit[Boolean] {
   val shared1 = new Shared1(shared0)
   val view = new View(shared1) with LocalDeferred
   val control = new Control(shared1) with LocalDeferred
-  val waterControl = new WaterControl(shared1) with Interval {
-    val interval = 0.2f
-  }
-  val progressDown = new ProgressDown(shared1) with Interval {
-    val interval = 0.5f
-  }
 
   var forceReload = false
   var iLoose = false
   var iWon = false
-
-  control.onPlayerStateChanged.ports += view.onPlayerStateChanged
-  control.onMoveLeft.ports += view.onMoveLeft
-  control.onMoveRight.ports += view.onMoveRight
-  control.onShoot.ports += view.onShoot
+  
   control.onGameReload + (_ => {
     forceReload = true
     stopNetworkThread()
@@ -50,18 +40,17 @@ class GameState(shared0: Shared0) extends YieldUnit[Boolean] {
 
   shared0.networkControl.onILoosePipe.ports += onILoose
   shared0.networkControl.onIWonPipe.ports += onIWon
-
-  shared0.networkControl.onProgressPipe.ports += progressDown.onEnemyProgress
-  val children = Seq(view, control, waterControl, progressDown)
+  
+  val children = Seq(view, control)
 
 
   override def onActivate(): Unit = {
-    Assets.Audios.bgm.play()
+    //Assets.Audios.bgm.play()
     children.foreach(_.onActivate())
   }
 
   override def onExit(): Unit = {
-    Assets.Audios.bgm.stop()
+    //Assets.Audios.bgm.stop()
     children.foreach(_.onExit())
     shared1.reset()
   }
@@ -79,12 +68,6 @@ class GameState(shared0: Shared0) extends YieldUnit[Boolean] {
     } else if (iWon) {
       iWon = false
       Some(true)
-    } else if(shared1.player.progress >= Const.Balance.maxProgress){
-      shared0.networkControl.iLoose()
-      Some(true)
-    }else if(shared1.player.progress <= 0){
-      shared0.networkControl.iWon()
-      Some(false)
     } else {
       None
     }

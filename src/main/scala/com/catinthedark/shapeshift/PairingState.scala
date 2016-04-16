@@ -1,13 +1,9 @@
 package com.catinthedark.shapeshift
 
-import com.badlogic.gdx.{Input, InputAdapter, Gdx}
 import com.badlogic.gdx.graphics.Texture
-import com.catinthedark.shapeshift.network.{NetworkServerControl, NetworkClientControl}
+import com.badlogic.gdx.{Gdx, Input, InputAdapter}
 import com.catinthedark.lib.{Stub, TextureState}
 
-/**
-  * Created by over on 12.12.15.
-  */
 class PairingState(shared0: Shared0, name: String) extends Stub(name) with TextureState {
   var hardSkip: Boolean = false
   
@@ -51,6 +47,6 @@ class PairingState(shared0: Shared0, name: String) extends Stub(name) with Textu
   override val texture: Texture = if (shared0.networkControl.isServer) {
     Assets.Textures.GoodThemePack.pairing
   } else {
-    Assets.Textures.UglyThemePack.pairing
+    Assets.Textures.WolfThemePack.pairing
   }
 }

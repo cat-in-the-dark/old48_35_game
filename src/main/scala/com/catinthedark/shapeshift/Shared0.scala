@@ -1,10 +1,7 @@
 package com.catinthedark.shapeshift
 
-import com.catinthedark.shapeshift.network.{NetworkServerControl, NetworkClientControl, NetworkControl}
+import com.catinthedark.shapeshift.network.{NetworkClientControl, NetworkServerControl}
 
-/**
- * Created by over on 18.04.15.
- */
 class Shared0(
   val serverAddress: String
 ) {

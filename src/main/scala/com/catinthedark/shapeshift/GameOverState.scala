@@ -9,7 +9,7 @@ class GameOverState(val shared: Shared0) extends Stub("GameOver") with TextureSt
   override val texture: Texture = if (shared.networkControl.isServer) {
     Assets.Textures.GoodThemePack.loseScreen
   } else {
-    Assets.Textures.UglyThemePack.loseScreen
+    Assets.Textures.WolfThemePack.loseScreen
   }
 
   override def onActivate(): Unit = {

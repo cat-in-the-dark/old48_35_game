@@ -1,7 +1,7 @@
 package com.catinthedark.shapeshift.network
 
 import com.catinthedark.shapeshift.common.Const
-import org.zeromq.ZMQ.{Socket, PollItem, Poller}
+import org.zeromq.ZMQ.Socket
 import org.zeromq.{ZContext, ZMQ}
 
 class NetworkClientControl(serverAddress: String) extends NetworkControl {

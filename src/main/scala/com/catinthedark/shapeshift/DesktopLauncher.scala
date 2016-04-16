@@ -1,19 +1,14 @@
 package com.catinthedark.shapeshift
 
+import javafx.application.Application
 import javafx.fxml.FXMLLoader
 import javafx.scene.Scene
 import javafx.scene.layout.VBox
 import javafx.stage.Stage
 
 import com.badlogic.gdx.backends.lwjgl.{LwjglApplication, LwjglApplicationConfiguration}
-import javafx.application.Application
-
 import com.catinthedark.lib.constants._
 import com.catinthedark.shapeshift.common.Const
-
-/**
-  * Created by over on 13.12.14.
-  */
 
 class MyApplication extends Application {
 
@@ -42,6 +37,7 @@ class MyApplication extends Application {
     stage.getScene().getWindow().setX(0)
   }
 }
+
 object DesktopLauncher {
   def main(args: Array[String]) {
     val conf = new LwjglApplicationConfiguration

@@ -2,10 +2,10 @@ package com.catinthedark.shapeshift.network
 
 import java.util.concurrent.ConcurrentLinkedQueue
 
-import com.catinthedark.shapeshift.common.Const
 import com.catinthedark.lib.Pipe
+import com.catinthedark.shapeshift.common.Const
 import org.zeromq.ZMQ
-import org.zeromq.ZMQ.{Socket, Poller, PollItem}
+import org.zeromq.ZMQ.{PollItem, Poller, Socket}
 
 trait NetworkControl extends Runnable {
   var isConnected: Option[Unit] = None

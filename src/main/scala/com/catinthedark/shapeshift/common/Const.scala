@@ -10,39 +10,13 @@ import com.catinthedark.lib.constants.ConstDelegate
 object Const extends ConstDelegate {
   override def delegate = Seq(
     debugEnabled,
-//    UI.skyPos,
-//    UI.enemyBackYRange,
-//    UI.enemyBackParallaxSpeed,
-    //    UI.myHedgeYRange, UI.myHedgeParallaxSpeed,
-    //    UI.groundYRange, UI.groundParallaxSpeed,
-    //    UI.roadYRange, UI.roadParallaxSpeed,
-//        UI.enemyHedgeYRange, UI.enemyHedgeParallaxSpeed,
     UI.playerMinX,
-//    UI.playerUpWH,
-//    UI.playerDownWH,
-//    gamerSpeed,
-//    gamerSlowSpeed,
-    //    UI.playerY,
-    //    UI.playerUpWH,
-    //    UI.playerDownWH,
-//    HUD.myProgressPos,
-//    HUD.enemyProgressPos,
-//    HUD.progressWh,
     HUD.myFragsPos,
     HUD.enemyFragsPos,
-//    UI.pumpPosition,
-//    HUD.waterBarPos,
-//    HUD.waterBarWh,
-//    UI.enemyY,
-//  UI.enemyYRange,
-//  UI.enemyParallaxSpeed,
-//    UI.plantPos
-//    UI.playerY,
-  UI.upbarPos,
-//  UI.waterbarPos,
-  HUD.ctrl1Pos,
-  HUD.ctrl2Pos,
-  Balance.progressDownSpeed
+    UI.upbarPos,
+    HUD.ctrl1Pos,
+    HUD.ctrl2Pos,
+    Balance.progressDownSpeed
   )
 
   val debugEnabled = onOff("debug render", false)
