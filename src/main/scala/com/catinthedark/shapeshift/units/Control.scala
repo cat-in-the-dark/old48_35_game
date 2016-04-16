@@ -3,9 +3,7 @@ package com.catinthedark.shapeshift.units
 
 import com.badlogic.gdx.{Gdx, Input, InputAdapter}
 import com.catinthedark.lib._
-import com.catinthedark.shapeshift.Assets
 import com.catinthedark.shapeshift.common.Const
-import com.catinthedark.shapeshift.common.Const.Balance
 import com.catinthedark.shapeshift.view._
 import org.lwjgl.util.Point
 
@@ -18,6 +16,8 @@ abstract class Control(shared: Shared1) extends SimpleUnit with Deferred {
   val onGameReload = new Pipe[Unit]()
   val onMoveLeft = new Pipe[Unit]()
   val onMoveRight = new Pipe[Unit]()
+  val onMoveForward = new Pipe[Unit]()
+  val onMoveBackward = new Pipe[Unit]()
 
   val STAND_KEY = Input.Keys.CONTROL_LEFT
 
@@ -49,6 +49,34 @@ abstract class Control(shared: Shared1) extends SimpleUnit with Deferred {
   }
 
   override def run(delta: Float): Unit = {
+    if (controlKeysPressed()) {
+      shared.player.state = RUNNING
+      
+      if (Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.D)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+          onMoveLeft()
+        } else {
+          onMoveRight()
+        }
+      }
+
+      if (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.S)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+          onMoveForward()
+        } else {
+          onMoveBackward()
+        }
+      }
+    } else {
+      shared.player.state = IDLE
+    }
+  }
+  
+  private def controlKeysPressed(): Boolean = {
+    Gdx.input.isKeyPressed(Input.Keys.A) || 
+      Gdx.input.isKeyPressed(Input.Keys.D) || 
+      Gdx.input.isKeyPressed(Input.Keys.W) || 
+      Gdx.input.isKeyPressed(Input.Keys.S)
   }
 
   override def onExit(): Unit = Gdx.input.setInputProcessor(null)

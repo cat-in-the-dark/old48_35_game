@@ -69,14 +69,17 @@ object Assets {
     
     trait PlayerAnimationPack {
       val running: Animation
+      val idle: TextureRegion
     }
     
     object HunterAnimationPack extends PlayerAnimationPack {
       override val running: Animation = loopingAnimation(Textures.HunterThemePack.bodyFrames, (0,0), (0, 1), (0, 2))
+      override val idle: TextureRegion = Textures.HunterThemePack.bodyFrames(0)(1)
     }
 
     object WolfAnimationPack extends PlayerAnimationPack {
       override val running: Animation = loopingAnimation(Textures.WolfThemePack.bodyFrames, (0,0), (0, 1), (0, 2))
+      override val idle: TextureRegion = Textures.HunterThemePack.bodyFrames(0)(1)
     }
   }
 

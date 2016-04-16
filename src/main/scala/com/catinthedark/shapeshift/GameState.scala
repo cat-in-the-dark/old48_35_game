@@ -15,6 +15,11 @@ class GameState(shared0: Shared0) extends YieldUnit[Boolean] {
   var forceReload = false
   var iLoose = false
   var iWon = false
+
+  control.onMoveLeft.ports += view.onMoveLeft
+  control.onMoveRight.ports += view.onMoveRight
+  control.onMoveForward.ports += view.onMoveForward
+  control.onMoveBackward.ports += view.onMoveBackward
   
   control.onGameReload + (_ => {
     forceReload = true

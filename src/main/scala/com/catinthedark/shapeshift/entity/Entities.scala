@@ -1,11 +1,11 @@
 package com.catinthedark.shapeshift.entity
 
-import com.badlogic.gdx.math.Rectangle
+import com.badlogic.gdx.math.{Rectangle, Vector2}
 import com.catinthedark.shapeshift.Assets.Animations.PlayerAnimationPack
 import com.catinthedark.shapeshift.common.Const
 import com.catinthedark.shapeshift.view._
 
-case class Enemy(var x: Float, var state: State, var frags: Int, pack: PlayerAnimationPack) {
+case class Enemy(var pos: Vector2, var state: State, var frags: Int, pack: PlayerAnimationPack) {
   var animationCounter = 0f
   
   def texture (delta: Float) = {
@@ -26,33 +26,25 @@ case class Enemy(var x: Float, var state: State, var frags: Int, pack: PlayerAni
   }
 
   def rect: Rectangle = {
-    state match {
-      case UP | SHOOTING | RUNNING =>
-        new Rectangle(Const.Projection.calcEnemyX(x), Const.UI.enemyY(), Const.UI.enemyUpWH().x, Const.UI.enemyUpWH().y)
-      case DOWN | CRAWLING | KILLED =>
-        null
-    }
+    new Rectangle(pos.x, pos.y, Const.UI.enemyUpWH().x, Const.UI.enemyUpWH().y)
   }
   
   def physRect: Rectangle = {
-    state match {
-      case UP | SHOOTING | RUNNING =>
-        new Rectangle(Const.Projection.calcEnemyX(x), Const.UI.enemyY(), Const.UI.enemyUpPhysWH().x, Const.UI.enemyUpPhysWH().y)
-      case _ =>
-        null
-    }
+    new Rectangle(pos.x, pos.y, Const.UI.enemyUpPhysWH().x, Const.UI.enemyUpPhysWH().y)
   }
 }
-case class Player(var x: Float, var state: State, var frags: Int, pack: PlayerAnimationPack, var water: Int = 0) {
+case class Player(var pos: Vector2, var state: State, var frags: Int, pack: PlayerAnimationPack) {
 
   var animationCounter = 0f
   var coolDown = false
 
   def texture (delta: Float) = {
     state match {
+      case IDLE => 
+        pack.idle
       case _ =>
         animationCounter += delta
-        pack.running
+        pack.running.getKeyFrame(animationCounter)
     }
 //    state match {
 //      case UP => pack.up
@@ -71,11 +63,10 @@ case class Player(var x: Float, var state: State, var frags: Int, pack: PlayerAn
   }
 
   def rect: Rectangle = {
-    state match {
-      case UP | SHOOTING | RUNNING =>
-        new Rectangle(x, Const.UI.playerY(), Const.UI.playerUpWH().x, Const.UI.playerUpWH().y)
-      case DOWN | CRAWLING | KILLED =>
-        new Rectangle(x, Const.UI.playerY(), Const.UI.playerDownWH().x, Const.UI.playerDownWH().y)
-    }
+    new Rectangle(pos.x, pos.y, Const.UI.playerUpWH().x, Const.UI.playerUpWH().y)
+  }
+
+  def physRect: Rectangle = {
+    new Rectangle(pos.x, pos.y, Const.UI.enemyUpPhysWH().x, Const.UI.enemyUpPhysWH().y)
   }
 }
