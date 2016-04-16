@@ -52,6 +52,10 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
     shared.player.pos.y -= speed
     shared.shared0.networkControl.move(shared.player.pos, shared.player.angle, idle = false)
   }
+  
+  def onIdle(u: Unit): Unit = {
+    shared.shared0.networkControl.move(shared.player.pos, shared.player.angle, idle = true)
+  }
 
   def layerToTexture(layerName: String) = layerName match {
     case "tree1" => Assets.Textures.tree1
@@ -84,6 +88,7 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
     Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
     drawFloor()
+    enemyView.run(delta)
 
     val layers = Assets.Maps.map1.getLayers
     drawTreeLayer(layers.get("tree1"))

@@ -20,6 +20,7 @@ class GameState(shared0: Shared0) extends YieldUnit[Boolean] {
   control.onMoveRight.ports += view.onMoveRight
   control.onMoveForward.ports += view.onMoveForward
   control.onMoveBackward.ports += view.onMoveBackward
+  control.onIdle.ports += view.onIdle
   
   control.onGameReload + (_ => {
     forceReload = true

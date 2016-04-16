@@ -18,6 +18,7 @@ abstract class Control(shared: Shared1) extends SimpleUnit with Deferred {
   val onMoveRight = new Pipe[Unit]()
   val onMoveForward = new Pipe[Unit]()
   val onMoveBackward = new Pipe[Unit]()
+  val onIdle = new Pipe[Unit]()
 
   val STAND_KEY = Input.Keys.CONTROL_LEFT
 
@@ -69,6 +70,7 @@ abstract class Control(shared: Shared1) extends SimpleUnit with Deferred {
       }
     } else {
       shared.player.state = IDLE
+      onIdle()
     }
   }
   
