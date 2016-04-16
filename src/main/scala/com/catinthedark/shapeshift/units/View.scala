@@ -183,7 +183,7 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
         magicBatch.drawCentered(tree.texture, tree.x, tree.y)
       })
 
-      magicBatch.drawWithDebug(shared.player.texture(delta), shared.player.rect, shared.player.rect)
+      //magicBatch.drawWithDebug(shared.player.texture(delta), shared.player.rect, shared.player.rect)
 
       magicBatch.drawCentered(shared.player.texture(delta), shared.player.pos.x, shared.player.pos.y)
       enemyView.render(delta, batch)

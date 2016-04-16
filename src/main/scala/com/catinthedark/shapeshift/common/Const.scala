@@ -81,7 +81,7 @@ object Const extends ConstDelegate {
   }
 
   object Balance {
-    val playerStartPos = new Vector2(0f, 0f)
+    def playerStartPos = new Vector2(0f, 0f)
     val treeRadius = 50
 
     trait playerBalance {
