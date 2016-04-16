@@ -1,4 +1,4 @@
-name := "old48_34_game"
+name := "old48_35_game"
 
 version := "1.2"
 
@@ -8,7 +8,7 @@ fork in Compile := true
 
 unmanagedResourceDirectories in Compile += file("assets")
 
-val libgdxVersion = "1.7.2"
+val libgdxVersion = "1.9.2"
 
 libraryDependencies ++= Seq(
   "com.badlogicgames.gdx" % "gdx" % libgdxVersion,
