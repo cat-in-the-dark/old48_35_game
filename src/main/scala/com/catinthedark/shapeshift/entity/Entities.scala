@@ -28,6 +28,7 @@ case class Enemy(var pos: Vector2, var state: State, var frags: Int, pack: Playe
     new Rectangle(pos.x, pos.y, Const.UI.enemyUpPhysWH().x, Const.UI.enemyUpPhysWH().y)
   }
 }
+
 case class Player(var pos: Vector2, var state: State, var frags: Int, pack: PlayerAnimationPack, balance: playerBalance, var angle: Float) {
 
   var animationCounter = 0f
@@ -52,5 +53,5 @@ case class Player(var pos: Vector2, var state: State, var frags: Int, pack: Play
   }
 }
 
-case class Tree(var x: Float, var y: Float, var radius: Float, texture: Texture) {
+case class Tree(var pos: Vector2, texture: Texture) {
 }
