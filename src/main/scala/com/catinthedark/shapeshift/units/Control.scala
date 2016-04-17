@@ -124,9 +124,9 @@ abstract class Control(shared: Shared1) extends SimpleUnit with Deferred {
       val predictedPos = new Vector2(shared.player.pos.x + speedX, shared.player.pos.y + speedY)
 
       shared.trees.foreach(tree => {
-        val predictDistance = predictedPos.dst(new Vector2(tree.x, tree.y)) - UI.playerPhysRadius - UI.treePhysRadius
+        val predictDistance = predictedPos.dst(tree.pos) - UI.playerPhysRadius - UI.treePhysRadius
         if (predictDistance <= 0) {
-          val angle = Math.atan2(tree.y - predictedPos.y, tree.x - predictedPos.x).toFloat
+          val angle = Math.atan2(tree.pos.y - predictedPos.y, tree.pos.x - predictedPos.x).toFloat
           val newPosX = predictedPos.x + predictDistance * Math.cos(angle).toFloat
           val newPosY = predictedPos.y + predictDistance * Math.sin(angle).toFloat
           speedX = newPosX - shared.player.pos.x

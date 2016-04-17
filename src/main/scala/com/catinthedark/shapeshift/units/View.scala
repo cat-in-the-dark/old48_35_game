@@ -68,7 +68,7 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
       val tree = mapTrees.next()
       val x = tree.getProperties.get("x", classOf[Float])
       val y = tree.getProperties.get("y", classOf[Float])
-      shared.trees += new Tree(x, y, UI.treePhysRadius, layerToTexture(layer.getName))
+      shared.trees += new Tree(new Vector2(x, y), layerToTexture(layer.getName))
     }
   }
 
@@ -213,19 +213,19 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
     enemyView.run(delta)
 
     shared.trees = shared.trees.sortWith((a, b) => {
-      shared.player.pos.dst(a.x, a.y) > shared.player.pos.dst(b.x, b.y)
+      shared.player.pos.dst(a.pos) > shared.player.pos.dst(b.pos)
     })
 
     shared.trees.foreach(tree => {
       val pos = shared.player.pos
       val maxRadius = shared.player.balance.maxRadius
-      val distance = pos.dst(tree.x, tree.y)
+      val distance = pos.dst(tree.pos)
       if (distance < maxRadius) {
-        drawShadow(pos, new Vector2(tree.x, tree.y), UI.treePhysRadius)
+        drawShadow(pos, tree.pos, UI.treePhysRadius)
       }
 
       magicBatch managed { batch =>
-        magicBatch.drawCircleCentered(tree.texture, tree.x, tree.y, Const.UI.treePhysRadius)
+        magicBatch.drawCircleCentered(tree.texture().getTexture, tree.pos.x, tree.pos.y, Const.UI.treePhysRadius)
       }
     })
 
