@@ -133,10 +133,6 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
     }
   }
 
-  def onIdle(u: Unit): Unit = {
-    shared.shared0.networkControl.move(shared.player.pos, shared.player.angle, idle = true)
-  }
-
   var lastJump = Const.Balance.jumpCoolDown
 
   def onJump(u: Unit): Unit = {

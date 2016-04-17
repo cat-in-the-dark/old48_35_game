@@ -16,7 +16,6 @@ abstract class Control(shared: Shared1) extends SimpleUnit with Deferred {
   val onPlayerStateChanged = new Pipe[State]()
   val onShoot = new Pipe[(Vector2, Vector2, Vector2, Option[Entity])]()
   val onGameReload = new Pipe[Unit]()
-  val onIdle = new Pipe[Unit]()
   val onJump = new Pipe[Unit]()
 
   val STAND_KEY = Input.Keys.CONTROL_LEFT
@@ -84,9 +83,26 @@ abstract class Control(shared: Shared1) extends SimpleUnit with Deferred {
       }
     })
   }
+  
+  def onJumping(): Unit = {
+    if (shared.player.state == JUMPING) {
+      shared.player.audio.steps.pause()
+    }
+    onJump()
+  }
 
   def onMove(): Unit = {
+    if (shared.player.state == RUNNING) {
+      shared.player.audio.steps.play()
+    } else {
+      shared.player.audio.steps.pause()
+    }
     shared.shared0.networkControl.move(shared.player.pos, shared.player.angle, idle = false)
+  }
+
+  def onIdle(u: Unit): Unit = {
+    shared.player.audio.steps.pause()
+    shared.shared0.networkControl.move(shared.player.pos, shared.player.angle, idle = true)
   }
 
   def movePlayer(speedX: Float, speedY: Float): Unit  = {
@@ -94,7 +110,7 @@ abstract class Control(shared: Shared1) extends SimpleUnit with Deferred {
     var newSpeedY = speedY
     val predictedPos = new Vector2(shared.player.pos.x + speedX, shared.player.pos.y + speedY)
 
-    if (!shared.player.state.equals(JUMPING)) {
+    if (shared.player.state != JUMPING) {
       shared.entities.foreach(entity => {
         entity match {
           case tree: Tree => {
@@ -127,7 +143,7 @@ abstract class Control(shared: Shared1) extends SimpleUnit with Deferred {
   override def run(delta: Float): Unit = {
     if (shared.player.state == KILLED) return
 
-    if (!shared.player.state.equals(JUMPING)) {
+    if (shared.player.state != JUMPING) {
       if (controlKeysPressed() || (Gdx.input.isKeyPressed(Input.Keys.SPACE) && shared.player.canJump)) {
         if (controlKeysPressed()) {
           shared.player.state = RUNNING
@@ -170,7 +186,7 @@ abstract class Control(shared: Shared1) extends SimpleUnit with Deferred {
           })
 
           shared.jumpingAngle = shared.player.angle
-          onJump()
+          onJumping()
         }
       } else {
         if (shared.player.state != SHOOTING) {
@@ -188,7 +204,7 @@ abstract class Control(shared: Shared1) extends SimpleUnit with Deferred {
       } else {
         shared.player.scale -= delta
       }
-      onJump()
+      onJumping()
     }
   }
   
