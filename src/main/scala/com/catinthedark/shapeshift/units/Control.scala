@@ -40,6 +40,11 @@ abstract class Control(shared: Shared1) extends SimpleUnit with Deferred {
           if (shared.player.canShot) {
             shared.player.canShot = false
             defer(shared.player.balance.shotColdown, () => shared.player.canShot = true)
+            defer(0.4f, () => {
+              if (shared.player.state == SHOOTING) {
+                shared.player.state = IDLE  
+              }
+            })
           
             val x = Const.Projection.calcX(screenX)
             val y = Const.Projection.calcY(screenY)
@@ -60,7 +65,8 @@ abstract class Control(shared: Shared1) extends SimpleUnit with Deferred {
                 Intersector.intersectSegmentCircle(segment._1, segment._2, entity.pos, Math.pow(entity.radius, 2f).toFloat)
               })
             })
-  
+
+            shared.player.state = SHOOTING
             onShoot(heroPoint, point1, point2, entity)
             val entityName = if (entity.isDefined) {
               entity.get.name
@@ -164,7 +170,9 @@ abstract class Control(shared: Shared1) extends SimpleUnit with Deferred {
         shared.jumpingAngle = shared.player.angle
         onJump()
       } else {
-        shared.player.state = IDLE
+        if (shared.player.state != SHOOTING) {
+          shared.player.state = IDLE
+        }
         onIdle()
       }
     } else {
