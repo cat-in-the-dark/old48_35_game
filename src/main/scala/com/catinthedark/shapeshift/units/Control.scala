@@ -1,7 +1,7 @@
 package com.catinthedark.shapeshift.units
 
 
-import com.badlogic.gdx.math.{MathUtils, Vector2}
+import com.badlogic.gdx.math.{Intersector, MathUtils, Vector2}
 import com.badlogic.gdx.{Gdx, Input, InputAdapter}
 import com.catinthedark.lib._
 import com.catinthedark.shapeshift.common.Const
@@ -41,13 +41,25 @@ abstract class Control(shared: Shared1) extends SimpleUnit with Deferred {
         if (pointer == Input.Buttons.LEFT) {
           val x = Const.Projection.calcX(screenX)
           val y = Const.Projection.calcY(screenY)
-          val x1_1 = MathUtils.cosDeg(shared.player.angle - shared.player.balance.shotDispersionAngle/2f) * shared.player.balance.shotRadius + shared.player.pos.x
-          val y1_1 = MathUtils.sinDeg(shared.player.angle - shared.player.balance.shotDispersionAngle/2f) * shared.player.balance.shotRadius + shared.player.pos.y
-          val x1_2 = MathUtils.cosDeg(shared.player.angle + shared.player.balance.shotDispersionAngle/2f) * shared.player.balance.shotRadius + shared.player.pos.x
-          val y1_2 = MathUtils.sinDeg(shared.player.angle + shared.player.balance.shotDispersionAngle/2f) * shared.player.balance.shotRadius + shared.player.pos.y
+          val heroPoint = new Vector2(shared.player.pos)
+          val point1 = new Vector2(
+            MathUtils.cosDeg(shared.player.angle - shared.player.balance.shotDispersionAngle/2f) * shared.player.balance.shotRadius + shared.player.pos.x,
+            MathUtils.sinDeg(shared.player.angle - shared.player.balance.shotDispersionAngle/2f) * shared.player.balance.shotRadius + shared.player.pos.y)
+          val point2 = new Vector2(
+            MathUtils.cosDeg(shared.player.angle + shared.player.balance.shotDispersionAngle/2f) * shared.player.balance.shotRadius + shared.player.pos.x,
+            MathUtils.sinDeg(shared.player.angle + shared.player.balance.shotDispersionAngle/2f) * shared.player.balance.shotRadius + shared.player.pos.y)
           
-          println(s"screenX: $screenX screenY: $screenY x: $x y: $y angle: ${shared.player.angle} x1: $x1_1 y1: $y1_1")
-          onShoot(new Vector2(shared.player.pos), new Vector2(x1_1, y1_1), new Vector2(x1_2, y1_2))
+          println(s"screenX: $screenX screenY: $screenY x: $x y: $y angle: ${shared.player.angle}")
+          
+          val segments = Array((point1, point2), (point1, heroPoint), (point2, heroPoint))
+          
+//          shared.trees.foreach(tree => {
+//            segments.filter(segment => {
+//              Intersector.intersectSegmentCircle(segment._1, segment._2, new Vector2(tree.x, tree.y), tree.radius)
+//            })
+//          })
+          
+          onShoot(heroPoint, point1, point2)
           true
         } else {
           false
