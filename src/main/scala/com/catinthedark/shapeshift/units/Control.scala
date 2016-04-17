@@ -106,6 +106,8 @@ abstract class Control(shared: Shared1) extends SimpleUnit with Deferred {
   }
 
   override def run(delta: Float): Unit = {
+    if (shared.player.state == KILLED) return 
+    
     if (controlKeysPressed()) {
       shared.player.state = RUNNING
 

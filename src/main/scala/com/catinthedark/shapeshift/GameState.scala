@@ -4,6 +4,8 @@ import com.catinthedark.lib.{LocalDeferred, YieldUnit}
 import com.catinthedark.shapeshift.common.Const
 import com.catinthedark.shapeshift.entity.{Entity, Tree}
 import com.catinthedark.shapeshift.units._
+import com.catinthedark.shapeshift.view.KILLED
+
 import scala.collection.mutable
 
 /**
@@ -15,8 +17,6 @@ class GameState(shared0: Shared0) extends YieldUnit[Boolean] {
   val control = new Control(shared1) with LocalDeferred
 
   var forceReload = false
-  var iLoose = false
-  var iWon = false
 
   control.onShoot.ports += view.onShot
   control.onIdle.ports += view.onIdle
@@ -26,13 +26,7 @@ class GameState(shared0: Shared0) extends YieldUnit[Boolean] {
     stopNetworkThread()
   })
 
-  def onILoose(u: Unit) = {
-    iLoose = true
-    stopNetworkThread()
-  }
-
-  def onIWon(u: Unit) = {
-    iWon = true
+  def onGameOver(u: Unit) = {
     stopNetworkThread()
   }
 
@@ -42,9 +36,6 @@ class GameState(shared0: Shared0) extends YieldUnit[Boolean] {
       shared0.networkControlThread.interrupt()
     }
   }
-
-  shared0.networkControl.onILoosePipe.ports += onILoose
-  shared0.networkControl.onIWonPipe.ports += onIWon
   
   val children = Seq(view, control)
 
@@ -64,14 +55,14 @@ class GameState(shared0: Shared0) extends YieldUnit[Boolean] {
     shared0.networkControl.processIn()
     children.foreach(_.run(delta))
 
+    println(s"State ${shared1.player.state}")
+    
     if (forceReload) {
       forceReload = false
       Some(false)
-    } else if (iLoose) {
-      iLoose = false
+    } else if (shared1.player.state == KILLED) {
       Some(false)
-    } else if (iWon) {
-      iWon = false
+    } else if (shared1.enemy.state == KILLED) {
       Some(true)
     } else {
       None

@@ -14,25 +14,17 @@ trait NetworkControl extends Runnable {
 
   val MOVE_PREFIX = "MOVE"
   val SHOOT_PREFIX = "SHOOT"
-  val ILOOSE_PREFIX = "ILOOSE"
-  val IWON_PREFIX = "IWON"
   val HELLO_PREFIX = "HELLO"
-  val ALIVE_PREFIX = "ALIVE"
+  val GAMEOVER_PREFIX = "GAMEOVER"
 
   val buffer = new ConcurrentLinkedQueue[String]()
   val bufferIn = new ConcurrentLinkedQueue[() => Unit]()
 
   val onMovePipe = new Pipe[(Vector2, Float, Boolean)]()
   val onShootPipe = new Pipe[(Vector2, String)]()
-  val onILoosePipe = new Pipe[Unit]()
-  val onIWonPipe = new Pipe[Unit]()
-  val onAlivePipe = new Pipe[Unit]()
 
   def onMove(msg: (Vector2, Float, Boolean)) = bufferIn.add(() => onMovePipe(msg))
   def onShoot(objName: String, shotFrom: Vector2) = bufferIn.add(() => onShootPipe(shotFrom, objName))
-  def onILoose() = bufferIn.add(() => onILoosePipe())
-  def onIWon() = bufferIn.add(() => onIWonPipe())
-  def onAlive() = bufferIn.add(() => onAlivePipe())
   
   def onHello(pushSocket: Socket) = println("Received hello package")
 
@@ -42,18 +34,6 @@ trait NetworkControl extends Runnable {
 
   def shoot(shotFrom: Vector2, objName: String): Unit = {
     buffer.add(s"$SHOOT_PREFIX:$objName;${shotFrom.x};${shotFrom.y}")
-  }
-
-  def iLoose(): Unit = {
-    buffer.add(s"$ILOOSE_PREFIX:")
-  }
-
-  def iWon(): Unit = {
-    buffer.add(s"$IWON_PREFIX:")
-  }
-
-  def iAlive(): Unit = {
-    buffer.add(s"$ALIVE_PREFIX:")
   }
 
   def processIn() = {
@@ -88,18 +68,11 @@ trait NetworkControl extends Runnable {
               val posX = attrs(1).toFloat
               val posY = attrs(2).toFloat
               onShoot(objName, new Vector2(posX, posY))
-            case ILOOSE_PREFIX =>
-              detectedGameEnd = true
-              onILoose()
-            case IWON_PREFIX =>
-              detectedGameEnd = true
-              onIWon()
             case HELLO_PREFIX =>
               onHello(pushSocket)
               isConnected = Some()
-            case ALIVE_PREFIX =>
-              println("enemy alive")
-              onAlive()
+            case GAMEOVER_PREFIX =>
+              detectedGameEnd = true
             case _ => println(s"UPS, wrong prefix $rawData")
           }
         }
@@ -107,7 +80,7 @@ trait NetworkControl extends Runnable {
         if (!buffer.isEmpty && pollItems(1).isWritable) {
           val message = buffer.poll()
           pushSocket.send(message)
-          if (message.startsWith(IWON_PREFIX) || message.startsWith(ILOOSE_PREFIX)) {
+          if (message.startsWith(GAMEOVER_PREFIX)) {
             detectedGameEnd = true
             shouldStop = true
           }
@@ -117,10 +90,6 @@ trait NetworkControl extends Runnable {
           println("Interrupted network thread")
           shouldStop = true
       }
-    }
-
-    if (!detectedGameEnd) {
-      pushSocket.send(s"$IWON_PREFIX:")
     }
 
     buffer.clear()

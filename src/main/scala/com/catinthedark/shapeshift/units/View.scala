@@ -88,6 +88,7 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
           println("Tree collide")
         case _: Enemy =>
           println("Enemy collide")
+          shared.enemy.state = KILLED
         case _ =>
           println("Here")
       }
