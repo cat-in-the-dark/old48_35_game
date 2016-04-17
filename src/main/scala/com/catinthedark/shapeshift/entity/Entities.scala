@@ -8,7 +8,7 @@ import com.catinthedark.shapeshift.common.Const
 import com.catinthedark.shapeshift.common.Const.Balance.playerBalance
 import com.catinthedark.shapeshift.view._
 
-trait Entity {
+sealed trait Entity {
   var pos: Vector2
   def texture(delta: Float = 0): TextureRegion
 }
