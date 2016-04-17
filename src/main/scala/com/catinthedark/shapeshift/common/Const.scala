@@ -67,6 +67,8 @@ object Const extends ConstDelegate {
     val darknessColor = new Color(darknessRed, darknessGreen, darknessBlue, 1f)
     val semiDarknessColor = new Color(darknessRed, darknessGreen, darknessBlue, 0.5f)
     val halfShadowAngle = 5f * Math.PI / 180
+
+    val maxJumpingScale = 2.0f
   }
 
   object HUD {
@@ -105,6 +107,9 @@ object Const extends ConstDelegate {
     def randomSpawn =
       spawnPoints(new Random().nextInt(spawnPoints.length))
 
+    val jumpTime = 1f
+    val jumpCoolDown = 5f
+
     trait playerBalance {
       val maxRadius: Int
       val viewAngle: Float
@@ -115,12 +120,12 @@ object Const extends ConstDelegate {
     object hunterBalance extends playerBalance {
       override val shotRadius: Int = 1000
       override val shotDispersionAngle: Float = 1
-      override val maxRadius: Int = 500
+      override val maxRadius: Int = 1000
       override val viewAngle: Float = 2f
     }
 
     object wolfBalance extends playerBalance {
-      override val maxRadius: Int = 600
+      override val maxRadius: Int = 2000
       override val viewAngle: Float = 2000f
       override val shotRadius: Int = 200
       override val shotDispersionAngle: Float = 30
@@ -132,5 +137,5 @@ object Const extends ConstDelegate {
   val pollTimeout = 10
   
   val gamerSpeed = frange("speed x", 5F, Some(0), Some(50))
-  val gamerSlowSpeed = frange("slow speed x", 0.5F, Some(0), Some(20))
+  val gamerJumpSpeed = frange("slow speed x", 10F, Some(0), Some(100))
 }

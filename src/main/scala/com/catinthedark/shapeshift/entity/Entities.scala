@@ -17,7 +17,7 @@ sealed trait Entity {
   def name: String
 }
 
-case class Enemy(var pos: Vector2, var state: State, pack: PlayerAnimationPack, audio: PlayerAudioPack, var angle: Float) extends Entity {
+case class Enemy(var pos: Vector2, var state: State, pack: PlayerAnimationPack, audio: PlayerAudioPack, var angle: Float, var scale: Float) extends Entity {
   var animationCounter = 0f
 
   def texture (delta: Float) = {
@@ -46,7 +46,7 @@ case class Enemy(var pos: Vector2, var state: State, pack: PlayerAnimationPack, 
   override def name: String = "Enemy"
 }
 
-case class Player(var pos: Vector2, var state: State, pack: PlayerAnimationPack, audio: PlayerAudioPack, balance: playerBalance, var angle: Float) extends Entity {
+case class Player(var pos: Vector2, var state: State, pack: PlayerAnimationPack, audio: PlayerAudioPack, balance: playerBalance, var angle: Float, var scale: Float, var canJump: Boolean) extends Entity {
 
   var animationCounter = 0f
   var coolDown = false

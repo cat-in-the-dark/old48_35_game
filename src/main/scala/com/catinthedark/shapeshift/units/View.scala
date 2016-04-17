@@ -52,6 +52,7 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
 
   shared.shared0.networkControl.onMovePipe.ports += enemyView.onMove
   shared.shared0.networkControl.onShootPipe.ports += enemyView.onShoot
+  shared.shared0.networkControl.onJumpPipe.ports += enemyView.onJump
   //  shared.shared0.networkControl.onShootPipe.ports += enemyView.onShoot
   //  shared.shared0.networkControl.onAlivePipe.ports += enemyView.onAlive
 
@@ -128,6 +129,10 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
 
   def onIdle(u: Unit): Unit = {
     shared.shared0.networkControl.move(shared.player.pos, shared.player.angle, idle = true)
+  }
+
+  def onJump(u: Unit): Unit = {
+    shared.shared0.networkControl.jump(shared.player.pos, shared.player.angle, shared.player.scale)
   }
 
   def layerToTexture(layerName: String) = layerName match {
@@ -282,7 +287,7 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
 //    shapeRenderer.end()
 
     playerBatch managed { batch =>
-      playerBatch.drawWithDebug(shared.player.texture(delta), shared.player.rect, shared.player.physRect, angle = shared.player.angle)
+      playerBatch.drawWithDebug(shared.player.texture(delta), shared.player.rect, shared.player.physRect, angle = shared.player.angle, scaleX = shared.player.scale, scaleY = shared.player.scale)
     }
     
     renderList.foreach(_())
