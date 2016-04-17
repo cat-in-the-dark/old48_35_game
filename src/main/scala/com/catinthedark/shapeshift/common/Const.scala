@@ -21,7 +21,7 @@ object Const extends ConstDelegate {
     HUD.ctrl2Pos
   )
 
-  val debugEnabled = onOff("debug render", true)
+  val debugEnabled = onOff("debug render", false)
 
   object UI {
     val animationSpeed = 0.2f
