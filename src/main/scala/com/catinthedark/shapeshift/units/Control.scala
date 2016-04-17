@@ -6,7 +6,7 @@ import com.badlogic.gdx.{Gdx, Input, InputAdapter}
 import com.catinthedark.lib._
 import com.catinthedark.shapeshift.common.Const
 import com.catinthedark.shapeshift.common.Const.UI
-import com.catinthedark.shapeshift.entity.Tree
+import com.catinthedark.shapeshift.entity.{Enemy, Entity, Tree}
 import com.catinthedark.shapeshift.view._
 
 /**
@@ -14,7 +14,7 @@ import com.catinthedark.shapeshift.view._
   */
 abstract class Control(shared: Shared1) extends SimpleUnit with Deferred {
   val onPlayerStateChanged = new Pipe[State]()
-  val onShoot = new Pipe[(Vector2, Vector2, Vector2)]()
+  val onShoot = new Pipe[(Vector2, Vector2, Vector2, Option[Entity])]()
   val onGameReload = new Pipe[Unit]()
 //  val onMoveLeft = new Pipe[Unit]()
 //  val onMoveRight = new Pipe[Unit]()
@@ -50,17 +50,17 @@ abstract class Control(shared: Shared1) extends SimpleUnit with Deferred {
             MathUtils.cosDeg(shared.player.angle + shared.player.balance.shotDispersionAngle/2f) * shared.player.balance.shotRadius + shared.player.pos.x,
             MathUtils.sinDeg(shared.player.angle + shared.player.balance.shotDispersionAngle/2f) * shared.player.balance.shotRadius + shared.player.pos.y)
           
-          println(s"screenX: $screenX screenY: $screenY x: $x y: $y angle: ${shared.player.angle}")
+          //println(s"screenX: $screenX screenY: $screenY x: $x y: $y angle: ${shared.player.angle}")
           
           val segments = Array((point1, point2), (point1, heroPoint), (point2, heroPoint))
           
-//          shared.trees.foreach(tree => {
-//            segments.filter(segment => {
-//              Intersector.intersectSegmentCircle(segment._1, segment._2, new Vector2(tree.x, tree.y), tree.radius)
-//            })
-//          })
+          val entity = shared.entities.reverse.find(entity => {
+            segments.exists(segment => {
+              Intersector.intersectSegmentCircle(segment._1, segment._2, entity.pos, Math.pow(entity.radius, 2f).toFloat)
+            })
+          })
           
-          onShoot(heroPoint, point1, point2)
+          onShoot(heroPoint, point1, point2, entity)
           true
         } else {
           false

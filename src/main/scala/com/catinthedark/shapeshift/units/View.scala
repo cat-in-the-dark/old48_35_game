@@ -73,12 +73,26 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
     }
   }
 
-  def onShot(data: (Vector2, Vector2, Vector2)): Unit = {
+  def onShot(data: (Vector2, Vector2, Vector2, Option[Entity])): Unit = {
     println(s"View onShot: $data")
     
     val playerPos = data._1
     val shotPoint1 = data._2
     val shotPoint2 = data._3
+    val entity = data._4
+
+    if (entity.isDefined) {
+      entity.get match {
+        case _: Tree =>
+          println("Tree collide")
+        case _: Enemy =>
+          println("Enemy collide")
+        case _ =>
+          println("Here")
+      }
+    } else {
+      println("Ricoshet")
+    }
     
     val task = () => {
       shapeRenderer.begin(ShapeType.Filled)
