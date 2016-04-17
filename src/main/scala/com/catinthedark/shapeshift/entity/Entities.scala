@@ -46,10 +46,9 @@ case class Enemy(var pos: Vector2, var state: State, pack: PlayerAnimationPack, 
   override def name: String = "Enemy"
 }
 
-case class Player(var pos: Vector2, var state: State, pack: PlayerAnimationPack, audio: PlayerAudioPack, balance: playerBalance, var angle: Float, var scale: Float, var canJump: Boolean) extends Entity {
+case class Player(var pos: Vector2, var state: State, pack: PlayerAnimationPack, audio: PlayerAudioPack, balance: playerBalance, var angle: Float, var scale: Float, var canJump: Boolean, var canShot: Boolean = true) extends Entity {
 
   var animationCounter = 0f
-  var coolDown = false
 
   def texture (delta: Float) = {
     state match {

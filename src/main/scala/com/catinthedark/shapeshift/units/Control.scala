@@ -37,33 +37,40 @@ abstract class Control(shared: Shared1) extends SimpleUnit with Deferred {
 
       override def touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean = {
         if (pointer == Input.Buttons.LEFT) {
-          val x = Const.Projection.calcX(screenX)
-          val y = Const.Projection.calcY(screenY)
-          val heroPoint = new Vector2(shared.player.pos)
-          val point1 = new Vector2(
-            MathUtils.cosDeg(shared.player.angle - shared.player.balance.shotDispersionAngle/2f) * shared.player.balance.shotRadius + shared.player.pos.x,
-            MathUtils.sinDeg(shared.player.angle - shared.player.balance.shotDispersionAngle/2f) * shared.player.balance.shotRadius + shared.player.pos.y)
-          val point2 = new Vector2(
-            MathUtils.cosDeg(shared.player.angle + shared.player.balance.shotDispersionAngle/2f) * shared.player.balance.shotRadius + shared.player.pos.x,
-            MathUtils.sinDeg(shared.player.angle + shared.player.balance.shotDispersionAngle/2f) * shared.player.balance.shotRadius + shared.player.pos.y)
-
-          //println(s"screenX: $screenX screenY: $screenY x: $x y: $y angle: ${shared.player.angle}")
-
-          val segments = Array((point1, point2), (point1, heroPoint), (point2, heroPoint))
-
-          val entity = shared.entities.reverse.find(entity => {
-            segments.exists(segment => {
-              Intersector.intersectSegmentCircle(segment._1, segment._2, entity.pos, Math.pow(entity.radius, 2f).toFloat)
+          if (shared.player.canShot) {
+            shared.player.canShot = false
+            defer(shared.player.balance.shotColdown, () => shared.player.canShot = true)
+          
+            val x = Const.Projection.calcX(screenX)
+            val y = Const.Projection.calcY(screenY)
+            val heroPoint = new Vector2(shared.player.pos)
+            val point1 = new Vector2(
+              MathUtils.cosDeg(shared.player.angle - shared.player.balance.shotDispersionAngle/2f) * shared.player.balance.shotRadius + shared.player.pos.x,
+              MathUtils.sinDeg(shared.player.angle - shared.player.balance.shotDispersionAngle/2f) * shared.player.balance.shotRadius + shared.player.pos.y)
+            val point2 = new Vector2(
+              MathUtils.cosDeg(shared.player.angle + shared.player.balance.shotDispersionAngle/2f) * shared.player.balance.shotRadius + shared.player.pos.x,
+              MathUtils.sinDeg(shared.player.angle + shared.player.balance.shotDispersionAngle/2f) * shared.player.balance.shotRadius + shared.player.pos.y)
+  
+            //println(s"screenX: $screenX screenY: $screenY x: $x y: $y angle: ${shared.player.angle}")
+  
+            val segments = Array((point1, point2), (point1, heroPoint), (point2, heroPoint))
+  
+            val entity = shared.entities.reverse.find(entity => {
+              segments.exists(segment => {
+                Intersector.intersectSegmentCircle(segment._1, segment._2, entity.pos, Math.pow(entity.radius, 2f).toFloat)
+              })
             })
-          })
-
-          onShoot(heroPoint, point1, point2, entity)
-          val entityName = if (entity.isDefined) {
-            entity.get.name
+  
+            onShoot(heroPoint, point1, point2, entity)
+            val entityName = if (entity.isDefined) {
+              entity.get.name
+            } else {
+              "None"
+            }
+            shared.shared0.networkControl.shoot(heroPoint, entityName)
           } else {
-            "None"
+            shared.player.audio.shootOut.play(1)
           }
-          shared.shared0.networkControl.shoot(heroPoint, entityName)
           true
         } else {
           false

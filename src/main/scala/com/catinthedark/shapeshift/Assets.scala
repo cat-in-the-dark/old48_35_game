@@ -117,18 +117,21 @@ object Assets {
       val shoot: Sound
       val ricochet: Sound
       val ricochetWood: Sound
+      val shootOut: Sound
     }
     
     object HunterAudioPack extends PlayerAudioPack {
       override val shoot = Gdx.audio.newSound(Gdx.files.internal("sound/hunter/shoot.mp3"))
       override val ricochet = Gdx.audio.newSound(Gdx.files.internal("sound/hunter/ricochet.mp3"))
       override val ricochetWood = Gdx.audio.newSound(Gdx.files.internal("sound/hunter/ricochet.mp3"))
+      override val shootOut = Gdx.audio.newSound(Gdx.files.internal("sound/hunter/shootout.mp3"))
     }
 
     object WolfAudioPack extends PlayerAudioPack {
       override val shoot = Gdx.audio.newSound(Gdx.files.internal("sound/wolf/kill.mp3"))
       override val ricochet = Gdx.audio.newSound(Gdx.files.internal("sound/wolf/shoot.mp3"))
       override val ricochetWood = Gdx.audio.newSound(Gdx.files.internal("sound/wolf/ricochet.mp3"))
+      override val shootOut = Gdx.audio.newSound(Gdx.files.internal("sound/wolf/shootout.mp3"))
     }
   }
 }
