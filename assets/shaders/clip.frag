@@ -30,7 +30,7 @@ void main() {
 
         cos_t = cos_t * sign(cos(radians(player_rot)));
         cos_t = max(cos_t, 0.0);
-        cos_t = pow(cos_t, 5);
+        cos_t = pow(cos_t, 5.0);
         cos_t = min(cos_t * phi, 1.0);
 
         float deg =  pow(0.95, distance(lpos.xy, gl_FragCoord.xy) / (max_dist / 70.0));
