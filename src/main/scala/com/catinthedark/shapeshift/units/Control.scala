@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.{Intersector, MathUtils, Vector2}
 import com.badlogic.gdx.{Gdx, Input, InputAdapter}
 import com.catinthedark.lib._
 import com.catinthedark.shapeshift.common.Const
-import com.catinthedark.shapeshift.common.Const.UI
+import com.catinthedark.shapeshift.common.Const.{Projection, UI}
 import com.catinthedark.shapeshift.entity.{Enemy, Entity, Tree}
 import com.catinthedark.shapeshift.view._
 
@@ -49,17 +49,17 @@ abstract class Control(shared: Shared1) extends SimpleUnit with Deferred {
           val point2 = new Vector2(
             MathUtils.cosDeg(shared.player.angle + shared.player.balance.shotDispersionAngle/2f) * shared.player.balance.shotRadius + shared.player.pos.x,
             MathUtils.sinDeg(shared.player.angle + shared.player.balance.shotDispersionAngle/2f) * shared.player.balance.shotRadius + shared.player.pos.y)
-          
+
           //println(s"screenX: $screenX screenY: $screenY x: $x y: $y angle: ${shared.player.angle}")
-          
+
           val segments = Array((point1, point2), (point1, heroPoint), (point2, heroPoint))
-          
+
           val entity = shared.entities.reverse.find(entity => {
             segments.exists(segment => {
               Intersector.intersectSegmentCircle(segment._1, segment._2, entity.pos, Math.pow(entity.radius, 2f).toFloat)
             })
           })
-          
+
           onShoot(heroPoint, point1, point2, entity)
           val entityName = if (entity.isDefined) {
             entity.get.name
@@ -145,6 +145,14 @@ abstract class Control(shared: Shared1) extends SimpleUnit with Deferred {
           case _ =>
         }
       })
+
+      if (predictedPos.x > Projection.mapWidth || predictedPos.x < 0) {
+        speedX = 0
+      }
+
+      if (predictedPos.y > Projection.mapHeight || predictedPos.y < 0) {
+        speedY = 0
+      }
 
       onMove(speedX, speedY)
     } else {
