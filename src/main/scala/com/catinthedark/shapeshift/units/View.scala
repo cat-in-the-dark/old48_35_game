@@ -31,7 +31,7 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
     println(clipShader.getLog)
     System.exit(1)
   }
-  val clipShaderSame = new ShaderProgram(Assets.Shaders.clipVert1, Assets.Shaders.clipFrag)
+  val clipShaderSame = new ShaderProgram(Assets.Shaders.clipVert1, Assets.Shaders.clipFrag1)
   if(!clipShaderSame.isCompiled) {
     println(clipShaderSame.getLog)
     System.exit(1)
@@ -39,6 +39,7 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
   val batch = new SpriteBatch()
   batch.setShader(clipShader)
   val magicBatch = new MagicSpriteBatch(Const.debugEnabled())
+  val playerBatch = new MagicSpriteBatch(Const.debugEnabled())
 
   magicBatch.setShader(clipShader)
   val shapeRenderer = new ShapeRenderer(5000, clipShaderSame)
@@ -81,6 +82,13 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
     val shotPoint2 = data._3
     
     val task = () => {
+      clipShaderSame.begin()
+      clipShaderSame.setUniformf("pos", shared.player.pos.x, shared.player.pos.y)
+      clipShader.setUniformf("resolution", Gdx.graphics.getWidth, Gdx.graphics.getHeight)
+      clipShaderSame.setUniformf("cam_pos", camera.position.x, camera.position.y)
+      clipShaderSame.setUniformf("player_rot", shared.player.angle)
+      clipShaderSame.setUniformf("max_dist", shared.player.balance.maxRadius)
+      clipShaderSame.setUniformf("phi", shared.player.balance.viewAngle)
       shapeRenderer.begin(ShapeType.Filled)
 
       shapeRenderer.setColor(1f, 0f, 0f, 0.5f)
@@ -90,6 +98,7 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
         shotPoint2.x, shotPoint2.y)
 
       shapeRenderer.end()
+      clipShaderSame.end()
     }
     renderList += task
     defer(2f, () => {
@@ -108,14 +117,28 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
     case _ => throw new RuntimeException(s"ooops. texture for layer $layerName not found")
   }
 
-  def drawFloor() =
-    batch.managed { self =>
-      self.draw(Assets.Textures.floor, 0,0,0,0, 3200, 3200)
+  def drawFloor() = {
+    clipShader.begin()
+    clipShader.setUniformf("pos", shared.player.pos.x, shared.player.pos.y)
+    clipShader.setUniformf("cam_pos", camera.position.x, camera.position.y)
+    clipShader.setUniformf("player_rot", shared.player.angle)
+    clipShader.setUniformf("max_dist", shared.player.balance.maxRadius)
+    clipShader.setUniformf("phi", shared.player.balance.viewAngle)
+    clipShader.setUniformf("resolution", Gdx.graphics.getWidth, Gdx.graphics.getHeight)
+    magicBatch.managed { self =>
+      self.draw(Assets.Textures.floor, 0, 0, 0, 0, 3200, 3200)
     }
+    clipShader.end()
+  }
 
   def drawShadow(lightPos: Vector2, targetPos: Vector2, radius: Float): Unit = {
-//    Gdx.gl.glEnable(GL20.GL_BLEND)
-//    Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA)
+    clipShaderSame.begin()
+    clipShaderSame.setUniformf("pos", shared.player.pos.x, shared.player.pos.y)
+    clipShader.setUniformf("resolution", Gdx.graphics.getWidth, Gdx.graphics.getHeight)
+    clipShaderSame.setUniformf("cam_pos", camera.position.x, camera.position.y)
+    clipShaderSame.setUniformf("player_rot", shared.player.angle)
+    clipShaderSame.setUniformf("max_dist", shared.player.balance.maxRadius)
+    clipShaderSame.setUniformf("phi", shared.player.balance.viewAngle)
 
     shapeRenderer.begin(ShapeType.Filled)
     shapeRenderer.setColor(UI.darknessColor)
@@ -143,7 +166,8 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
     shapeRenderer.triangle(x1, y1, x4, y4, x5, y5)
     shapeRenderer.triangle(x2, y2, x3, y3, x6, y6)
     shapeRenderer.end()
-    Gdx.gl.glDisable(GL20.GL_BLEND)
+
+    clipShaderSame.end()
   }
 
   override def run(delta: Float) = {
@@ -178,39 +202,11 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
     camera.update()
     batch.setProjectionMatrix(camera.combined)
     magicBatch.setProjectionMatrix(camera.combined)
+    playerBatch.setProjectionMatrix(camera.combined)
     shapeRenderer.setProjectionMatrix(camera.combined)
 
-    clipShader.begin()
-    clipShader.setUniformf("pos", shared.player.pos.x, shared.player.pos.y)
-    clipShader.setUniformf("resolution", Gdx.graphics.getWidth, Gdx.graphics.getHeight)
-    clipShaderSame.setUniformf("cam_pos", camera.position.x, camera.position.y)
-    clipShaderSame.setUniformf("player_rot", shared.player.angle)
-    clipShaderSame.setUniformf("max_dist", shared.player.balance.maxRadius)
-    clipShaderSame.setUniformf("phi", shared.player.balance.viewAngle)
-    //clipShader.setUniformMatrix("cam_proj", camera.combined)
-    clipShader.end()
-    clipShaderSame.begin()
-    clipShaderSame.setUniformf("pos", shared.player.pos.x, shared.player.pos.y)
-    //clipShader.setUniformf("resolution", Gdx.graphics.getWidth, Gdx.graphics.getHeight)
-    //clipShader.setUniformMatrix("cam_proj", camera.combined)
-    clipShaderSame.setUniformf("cam_pos", camera.position.x, camera.position.y)
-    clipShaderSame.setUniformf("player_rot", shared.player.angle)
-    clipShaderSame.setUniformf("max_dist", shared.player.balance.maxRadius)
-    clipShaderSame.setUniformf("phi", shared.player.balance.viewAngle)
-    clipShaderSame.end()
-
-
-//    //8. Enable RGBA color writing
-//    //   (SpriteBatch.begin() will disable depth mask)
-//    Gdx.gl.glColorMask(true, true, true, true)
-//
-//    //9. Make sure testing is enabled.
-//    Gdx.gl.glEnable(GL20.GL_DEPTH_TEST)
-//
-//    //10. Now depth discards pixels outside our masked shapes
-//    Gdx.gl.glDepthFunc(GL20.GL_EQUAL)
-
     drawFloor()
+
     enemyView.run(delta)
 
     shared.entities = shared.entities.sortWith((a, b) => {
@@ -225,6 +221,14 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
         drawShadow(pos, entity.pos, entity.radius)
       }
 
+      clipShader.begin()
+      clipShader.setUniformf("pos", shared.player.pos.x, shared.player.pos.y)
+      clipShader.setUniformf("cam_pos", camera.position.x, camera.position.y)
+      clipShader.setUniformf("player_rot", shared.player.angle)
+      clipShader.setUniformf("max_dist", shared.player.balance.maxRadius)
+      clipShader.setUniformf("phi", shared.player.balance.viewAngle)
+      clipShader.setUniformf("resolution", Gdx.graphics.getWidth, Gdx.graphics.getHeight)
+
       magicBatch managed { batch =>
         entity match {
           case enemy: Enemy =>
@@ -234,6 +238,8 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
           case _ =>
         }
       }
+
+      clipShader.end()
     })
 
 //    shapeRenderer.begin(ShapeType.Filled)
@@ -251,8 +257,8 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
 //    shapeRenderer.arc(shared.player.pos.x, shared.player.pos.y, shared.player.balance.maxRadius + 2, start.toFloat, degrees)
 //    shapeRenderer.end()
 
-    magicBatch managed { batch =>
-      magicBatch.drawWithDebug(shared.player.texture(delta), shared.player.rect, shared.player.physRect, angle = shared.player.angle)
+    playerBatch managed { batch =>
+      playerBatch.drawWithDebug(shared.player.texture(delta), shared.player.rect, shared.player.physRect, angle = shared.player.angle)
     }
     
     renderList.foreach(_())

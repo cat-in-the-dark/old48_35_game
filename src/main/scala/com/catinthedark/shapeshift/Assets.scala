@@ -17,6 +17,7 @@ object Assets {
     val clipVert = Gdx.files.internal("shaders/clip.vert")
     val clipVert1 = Gdx.files.internal("shaders/clip_1.vert")
     val clipFrag = Gdx.files.internal("shaders/clip.frag")
+    val clipFrag1 = Gdx.files.internal("shaders/clip_1.frag")
   }
   object Textures {
     val logo = new Texture(Gdx.files.internal("textures/logo.png"))
