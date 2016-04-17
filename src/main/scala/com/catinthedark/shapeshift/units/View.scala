@@ -51,6 +51,7 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
   camera.update()
 
   shared.shared0.networkControl.onMovePipe.ports += enemyView.onMove
+  shared.shared0.networkControl.onShootPipe.ports += enemyView.onShoot
   //  shared.shared0.networkControl.onShootPipe.ports += enemyView.onShoot
   //  shared.shared0.networkControl.onAlivePipe.ports += enemyView.onAlive
 

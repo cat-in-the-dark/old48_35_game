@@ -14,6 +14,13 @@ abstract class EnemyView(val shared: Shared1) extends SimpleUnit with Deferred {
       RUNNING
     }
   }
+  
+  def onShoot(data: (Vector2, String)): Unit = {
+    val shootPos = data._1
+    val objName = data._2
+    
+    println(s"Network $shootPos $objName")
+  }
 
   def render(delta: Float, magicBatch: MagicSpriteBatch) = {
     magicBatch.drawWithDebug(shared.enemy.texture(delta), shared.enemy.rect, shared.enemy.physRect, angle = shared.enemy.angle)

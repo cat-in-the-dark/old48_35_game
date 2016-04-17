@@ -5,6 +5,7 @@ import java.util.concurrent.ConcurrentLinkedQueue
 import com.badlogic.gdx.math.Vector2
 import com.catinthedark.lib.Pipe
 import com.catinthedark.shapeshift.common.Const
+import com.catinthedark.shapeshift.entity.Entity
 import org.zeromq.ZMQ
 import org.zeromq.ZMQ.{PollItem, Poller, Socket}
 
@@ -22,13 +23,13 @@ trait NetworkControl extends Runnable {
   val bufferIn = new ConcurrentLinkedQueue[() => Unit]()
 
   val onMovePipe = new Pipe[(Vector2, Float, Boolean)]()
-  val onShootPipe = new Pipe[Boolean]()
+  val onShootPipe = new Pipe[(Vector2, String)]()
   val onILoosePipe = new Pipe[Unit]()
   val onIWonPipe = new Pipe[Unit]()
   val onAlivePipe = new Pipe[Unit]()
 
   def onMove(msg: (Vector2, Float, Boolean)) = bufferIn.add(() => onMovePipe(msg))
-  def onShoot(msg: Boolean) = bufferIn.add(() => onShootPipe(msg))
+  def onShoot(objName: String, shotFrom: Vector2) = bufferIn.add(() => onShootPipe(shotFrom, objName))
   def onILoose() = bufferIn.add(() => onILoosePipe())
   def onIWon() = bufferIn.add(() => onIWonPipe())
   def onAlive() = bufferIn.add(() => onAlivePipe())
@@ -39,8 +40,8 @@ trait NetworkControl extends Runnable {
     buffer.add(s"$MOVE_PREFIX:${pos.x};${pos.y};$angle;$idle")
   }
 
-  def shoot(exactly: Boolean): Unit = {
-    buffer.add(s"$SHOOT_PREFIX:$exactly")
+  def shoot(shotFrom: Vector2, objName: String): Unit = {
+    buffer.add(s"$SHOOT_PREFIX:$objName;${shotFrom.x};${shotFrom.y}")
   }
 
   def iLoose(): Unit = {
@@ -83,8 +84,10 @@ trait NetworkControl extends Runnable {
               onMove(pos, angle, idle)
             case SHOOT_PREFIX =>
               val attrs = data(1).split(";")
-              val exactly = attrs(0).toBoolean
-              onShoot(exactly)
+              val objName = attrs(0)
+              val posX = attrs(1).toFloat
+              val posY = attrs(2).toFloat
+              onShoot(objName, new Vector2(posX, posY))
             case ILOOSE_PREFIX =>
               detectedGameEnd = true
               onILoose()
