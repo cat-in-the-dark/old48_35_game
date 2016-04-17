@@ -128,47 +128,50 @@ abstract class Control(shared: Shared1) extends SimpleUnit with Deferred {
     if (shared.player.state == KILLED) return
 
     if (!shared.player.state.equals(JUMPING)) {
-      if (controlKeysPressed()) {
-        shared.player.state = RUNNING
+      if (controlKeysPressed() || (Gdx.input.isKeyPressed(Input.Keys.SPACE) && shared.player.canJump)) {
+        if (controlKeysPressed()) {
+          shared.player.state = RUNNING
 
-        var speedX = 0f
-        var speedY = 0f
-        val speed = Const.gamerSpeed()
+          var speedX = 0f
+          var speedY = 0f
+          val speed = Const.gamerSpeed()
 
-        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-          speedX -= speed
+          if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+            speedX -= speed
+          }
+
+          if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+            speedX += speed
+          }
+
+          if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+            speedY += speed
+          }
+
+          if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+            speedY -= speed
+          }
+
+          movePlayer(speedX, speedY)
+          onMove()
         }
 
-        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-          speedX += speed
+        if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && shared.player.canJump) {
+          shared.player.state = JUMPING
+          shared.player.canJump = false
+          defer(Balance.jumpTime, () => {
+            shared.player.state = IDLE
+            shared.player.scale = 1.0f
+            shared.jumpTime = 0
+          })
+
+          defer(Balance.jumpCoolDown, () => {
+            shared.player.canJump = true
+          })
+
+          shared.jumpingAngle = shared.player.angle
+          onJump()
         }
-
-        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-          speedY += speed
-        }
-
-        if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-          speedY -= speed
-        }
-
-        movePlayer(speedX, speedY)
-        onMove()
-
-      } else if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && shared.player.canJump) {
-        shared.player.state = JUMPING
-        shared.player.canJump = false
-        defer(Balance.jumpTime, () => {
-          shared.player.state = IDLE
-          shared.player.scale = 1.0f
-          shared.jumpTime = 0
-        })
-
-        defer(Balance.jumpCoolDown, () => {
-          shared.player.canJump = true
-        })
-
-        shared.jumpingAngle = shared.player.angle
-        onJump()
       } else {
         if (shared.player.state != SHOOTING) {
           shared.player.state = IDLE
