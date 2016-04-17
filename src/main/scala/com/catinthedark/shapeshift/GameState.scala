@@ -16,6 +16,7 @@ class GameState(shared0: Shared0) extends YieldUnit[Boolean] {
   var iLoose = false
   var iWon = false
 
+  control.onShoot.ports += view.onShot
   control.onMoveLeft.ports += view.onMoveLeft
   control.onMoveRight.ports += view.onMoveRight
   control.onMoveForward.ports += view.onMoveForward

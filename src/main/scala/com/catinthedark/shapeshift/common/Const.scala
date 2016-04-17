@@ -101,9 +101,13 @@ object Const extends ConstDelegate {
     trait playerBalance {
       val maxRadius: Int
       val viewAngle: Int
+      val shotRadius: Int
+      val shotDispersionAngle: Float
     }
 
     object hunterBalance extends playerBalance {
+      override val shotRadius: Int = 1000
+      override val shotDispersionAngle: Float = 1
       override val maxRadius: Int = 400
       override val viewAngle: Int = 60
     }
@@ -111,6 +115,8 @@ object Const extends ConstDelegate {
     object wolfBalance extends playerBalance {
       override val maxRadius: Int = 750
       override val viewAngle: Int = 150
+      override val shotRadius: Int = 200
+      override val shotDispersionAngle: Float = 30
     }
   }
 

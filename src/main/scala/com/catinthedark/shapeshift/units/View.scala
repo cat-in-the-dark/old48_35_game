@@ -1,21 +1,24 @@
 package com.catinthedark.shapeshift.units
 
+import java.util.concurrent.ConcurrentLinkedQueue
+
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics._
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.maps.MapLayer
-import com.badlogic.gdx.graphics.glutils.{ShaderProgram, FrameBuffer, ShapeRenderer}
+import com.badlogic.gdx.graphics.glutils.{FrameBuffer, ShaderProgram, ShapeRenderer}
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType
 import com.badlogic.gdx.math.Vector2
 import com.catinthedark.shapeshift.Assets
 import com.catinthedark.shapeshift.common.Const
-import com.catinthedark.shapeshift.common.Const.{UI, Balance}
+import com.catinthedark.shapeshift.common.Const.{Balance, UI}
 import com.catinthedark.shapeshift.entity.Tree
 import com.catinthedark.shapeshift.view._
 import com.catinthedark.lib._
 import com.catinthedark.shapeshift.common.Const
 import Magic.richifySpriteBatch
 import org.lwjgl.util.Point
+
 import scala.collection.mutable
 
 /**
@@ -37,6 +40,8 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
   //  shared.shared0.networkControl.onShootPipe.ports += enemyView.onShoot
   //  shared.shared0.networkControl.onAlivePipe.ports += enemyView.onAlive
 
+  val renderList = new mutable.ArrayBuffer[() => Unit]()
+
   override def onActivate() = {
     val layers = Assets.Maps.map1.getLayers
     plantTrees(layers.get("tree1"))
@@ -52,6 +57,30 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
       val y = tree.getProperties.get("y", classOf[Float])
       trees += new Tree(x, y, Const.Balance.treeRadius, layerToTexture(layer.getName))
     }
+  }
+  
+  def onShot(data: (Vector2, Vector2, Vector2)): Unit = {
+    println(s"View onShot: $data")
+    
+    val playerPos = data._1
+    val shotPoint1 = data._2
+    val shotPoint2 = data._3
+    
+    val task = () => {
+      shapeRenderer.begin(ShapeType.Filled)
+
+      shapeRenderer.setColor(1f, 0f, 0f, 0.5f)
+      shapeRenderer.triangle(
+        playerPos.x, playerPos.y, 
+        shotPoint1.x, shotPoint1.y, 
+        shotPoint2.x, shotPoint2.y)
+
+      shapeRenderer.end()
+    }
+    renderList += task
+    defer(2f, () => {
+      renderList -= task
+    })
   }
 
   def onMoveLeft(u: Unit): Unit = {
@@ -216,6 +245,8 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
       magicBatch.drawWithDebug(shared.player.texture(delta), shared.player.rect, shared.player.physRect, angle = shared.player.angle)
       enemyView.render(delta, batch)
     }
+    
+    renderList.foreach(_())
   }
 
   override def onExit() = {
