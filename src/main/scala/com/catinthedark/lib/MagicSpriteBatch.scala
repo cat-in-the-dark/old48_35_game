@@ -9,7 +9,7 @@ import com.badlogic.gdx.math.{Matrix4, Rectangle}
 class MagicSpriteBatch(debugOn: => Boolean) extends SpriteBatch {
   val debug = new ShapeRenderer()
 
-  def drawWithDebug(t: TextureRegion, viewPos: Rectangle, physPos: Rectangle, centerX: Boolean = true, centerY: Boolean = true, angle: Float = 0f): Unit = {
+  def drawWithDebug(t: TextureRegion, viewPos: Rectangle, physPos: Rectangle, centerX: Boolean = true, centerY: Boolean = true, angle: Float = 0f, scaleX: Float = 1f, scaleY: Float = 1f): Unit = {
     draw(t, 
       viewPos.x - (if (centerX) viewPos.width / 2 else 0),
       viewPos.y - (if (centerX) viewPos.height / 2 else 0),
@@ -17,7 +17,7 @@ class MagicSpriteBatch(debugOn: => Boolean) extends SpriteBatch {
       viewPos.height / 2f,
       viewPos.width,
       viewPos.height,
-      1f, 1f, angle, true)
+      scaleX, scaleY, angle, true)
 
     if (debugOn) debug.rect(
       physPos.x - (if (centerX) physPos.width / 2 else 0),
