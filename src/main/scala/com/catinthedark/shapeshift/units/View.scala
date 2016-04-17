@@ -98,6 +98,39 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
       self.draw(Assets.Textures.floor, 0,0,0,0, 3200, 3200)
     }
 
+  def drawShadow(lightPos: Vector2, targetPos: Vector2, radius: Float): Unit = {
+    Gdx.gl.glEnable(GL20.GL_BLEND)
+    Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA)
+
+    shapeRenderer.begin(ShapeType.Filled)
+    shapeRenderer.setColor(UI.darknessColor)
+
+    val distance = lightPos.dst(targetPos)
+
+    val alpha = Math.atan2(targetPos.y - lightPos.y, targetPos.x - lightPos.x)
+    val beta = Math.asin(UI.treePhysRadius / distance)
+    val x1 = (lightPos.x + distance * Math.cos(alpha - beta)).toFloat
+    val y1 = (lightPos.y + distance * Math.sin(alpha - beta)).toFloat
+    val x2 = (lightPos.x + distance * Math.cos(alpha + beta)).toFloat
+    val y2 = (lightPos.y + distance * Math.sin(alpha + beta)).toFloat
+    val x3 = (x2 + UI.rayLength * Math.cos(alpha + beta)).toFloat
+    val y3 = (y2 + UI.rayLength * Math.sin(alpha + beta)).toFloat
+    val x4 = (x1 + UI.rayLength * Math.cos(alpha - beta)).toFloat
+    val y4 = (y1 + UI.rayLength * Math.sin(alpha - beta)).toFloat
+    val x5 = (x1 + UI.rayLength * Math.cos(alpha - beta - UI.halfShadowAngle)).toFloat
+    val y5 = (y1 + UI.rayLength * Math.sin(alpha - beta - UI.halfShadowAngle)).toFloat
+    val x6 = (x2 + UI.rayLength * Math.cos(alpha + beta + UI.halfShadowAngle)).toFloat
+    val y6 = (y2 + UI.rayLength * Math.sin(alpha + beta + UI.halfShadowAngle)).toFloat
+
+    shapeRenderer.triangle(x1, y1, x2, y2, x3, y3)
+    shapeRenderer.triangle(x1, y1, x3, y3, x4, y4)
+    shapeRenderer.setColor(UI.semiDarknessColor)
+    shapeRenderer.triangle(x1, y1, x4, y4, x5, y5)
+    shapeRenderer.triangle(x2, y2, x3, y3, x6, y6)
+    shapeRenderer.end()
+    Gdx.gl.glDisable(GL20.GL_BLEND)
+  }
+
   override def run(delta: Float) = {
     //1. clear screen
     Gdx.gl.glClearColor(UI.darknessRed, UI.darknessGreen, UI.darknessBlue, 0)
@@ -161,34 +194,7 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
       val maxRadius = shared.player.balance.maxRadius
       val distance = pos.dst(tree.x, tree.y)
       if (distance < maxRadius) {
-        Gdx.gl.glEnable(GL20.GL_BLEND)
-        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA)
-
-        shapeRenderer.begin(ShapeType.Filled)
-        shapeRenderer.setColor(UI.darknessColor)
-
-        val alpha = Math.atan2(tree.y - pos.y, tree.x - pos.x)
-        val beta = Math.asin(UI.treePhysRadius / distance)
-        val x1 = (pos.x + distance * Math.cos(alpha - beta)).toFloat
-        val y1 = (pos.y + distance * Math.sin(alpha - beta)).toFloat
-        val x2 = (pos.x + distance * Math.cos(alpha + beta)).toFloat
-        val y2 = (pos.y + distance * Math.sin(alpha + beta)).toFloat
-        val x3 = (x2 + UI.rayLength * Math.cos(alpha + beta)).toFloat
-        val y3 = (y2 + UI.rayLength * Math.sin(alpha + beta)).toFloat
-        val x4 = (x1 + UI.rayLength * Math.cos(alpha - beta)).toFloat
-        val y4 = (y1 + UI.rayLength * Math.sin(alpha - beta)).toFloat
-        val x5 = (x1 + UI.rayLength * Math.cos(alpha - beta - UI.halfShadowAngle)).toFloat
-        val y5 = (y1 + UI.rayLength * Math.sin(alpha - beta - UI.halfShadowAngle)).toFloat
-        val x6 = (x2 + UI.rayLength * Math.cos(alpha + beta + UI.halfShadowAngle)).toFloat
-        val y6 = (y2 + UI.rayLength * Math.sin(alpha + beta + UI.halfShadowAngle)).toFloat
-
-        shapeRenderer.triangle(x1, y1, x2, y2, x3, y3)
-        shapeRenderer.triangle(x1, y1, x3, y3, x4, y4)
-        shapeRenderer.setColor(UI.semiDarknessColor)
-        shapeRenderer.triangle(x1, y1, x4, y4, x5, y5)
-        shapeRenderer.triangle(x2, y2, x3, y3, x6, y6)
-        shapeRenderer.end()
-        Gdx.gl.glDisable(GL20.GL_BLEND)
+        drawShadow(pos, new Vector2(tree.x, tree.y), UI.treePhysRadius)
       }
 
       magicBatch managed { batch =>
