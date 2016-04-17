@@ -42,7 +42,7 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
   val playerBatch = new MagicSpriteBatch(Const.debugEnabled())
 
   magicBatch.setShader(clipShader)
-  val shapeRenderer = new ShapeRenderer(5000, clipShaderSame)
+  val shapeRenderer = new ShapeRenderer(5000)
 
   val enemyView = new EnemyView(shared) with LocalDeferred
   val camera = new OrthographicCamera(Const.Projection.width, Const.Projection.height)
@@ -97,13 +97,13 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
     }
     
     val task = () => {
-      clipShaderSame.begin()
-      clipShaderSame.setUniformf("pos", shared.player.pos.x, shared.player.pos.y)
-      clipShader.setUniformf("resolution", Gdx.graphics.getWidth, Gdx.graphics.getHeight)
-      clipShaderSame.setUniformf("cam_pos", camera.position.x, camera.position.y)
-      clipShaderSame.setUniformf("player_rot", shared.player.angle)
-      clipShaderSame.setUniformf("max_dist", shared.player.balance.maxRadius)
-      clipShaderSame.setUniformf("phi", shared.player.balance.viewAngle)
+//      clipShaderSame.begin()
+//      clipShaderSame.setUniformf("pos", shared.player.pos.x, shared.player.pos.y)
+//      clipShader.setUniformf("resolution", Gdx.graphics.getWidth, Gdx.graphics.getHeight)
+//      clipShaderSame.setUniformf("cam_pos", camera.position.x, camera.position.y)
+//      clipShaderSame.setUniformf("player_rot", shared.player.angle)
+//      clipShaderSame.setUniformf("max_dist", shared.player.balance.maxRadius)
+//      clipShaderSame.setUniformf("phi", shared.player.balance.viewAngle)
       shapeRenderer.begin(ShapeType.Filled)
 
       shapeRenderer.setColor(1f, 0f, 0f, 0.5f)
@@ -113,7 +113,7 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
         shotPoint2.x, shotPoint2.y)
 
       shapeRenderer.end()
-      clipShaderSame.end()
+      //clipShaderSame.end()
     }
     renderList += task
     defer(2f, () => {
@@ -147,16 +147,18 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
   }
 
   def drawShadow(lightPos: Vector2, targetPos: Vector2, radius: Float): Unit = {
-    clipShaderSame.begin()
-    clipShaderSame.setUniformf("pos", shared.player.pos.x, shared.player.pos.y)
-    clipShader.setUniformf("resolution", Gdx.graphics.getWidth, Gdx.graphics.getHeight)
-    clipShaderSame.setUniformf("cam_pos", camera.position.x, camera.position.y)
-    clipShaderSame.setUniformf("player_rot", shared.player.angle)
-    clipShaderSame.setUniformf("max_dist", shared.player.balance.maxRadius)
-    clipShaderSame.setUniformf("phi", shared.player.balance.viewAngle)
+    Gdx.gl.glEnable(GL20.GL_BLEND)
+    Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA)
+//    clipShaderSame.begin()
+//    clipShaderSame.setUniformf("pos", shared.player.pos.x, shared.player.pos.y)
+//    clipShader.setUniformf("resolution", Gdx.graphics.getWidth, Gdx.graphics.getHeight)
+//    clipShaderSame.setUniformf("cam_pos", camera.position.x, camera.position.y)
+//    clipShaderSame.setUniformf("player_rot", shared.player.angle)
+//    clipShaderSame.setUniformf("max_dist", shared.player.balance.maxRadius)
+//    clipShaderSame.setUniformf("phi", shared.player.balance.viewAngle)
 
     shapeRenderer.begin(ShapeType.Filled)
-    shapeRenderer.setColor(UI.darknessColor)
+    shapeRenderer.setColor(0,0,0,1)
 
     val distance = lightPos.dst(targetPos)
 
@@ -177,12 +179,14 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
 
     shapeRenderer.triangle(x1, y1, x2, y2, x3, y3)
     shapeRenderer.triangle(x1, y1, x3, y3, x4, y4)
-    shapeRenderer.setColor(UI.semiDarknessColor)
+    shapeRenderer.setColor(0,0,0, 0.5f)
     shapeRenderer.triangle(x1, y1, x4, y4, x5, y5)
     shapeRenderer.triangle(x2, y2, x3, y3, x6, y6)
     shapeRenderer.end()
 
-    clipShaderSame.end()
+    Gdx.gl.glDisable(GL20.GL_BLEND)
+
+//    clipShaderSame.end()
   }
 
   override def run(delta: Float) = {
