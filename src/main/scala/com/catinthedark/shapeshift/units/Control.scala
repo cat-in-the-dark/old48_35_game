@@ -40,6 +40,11 @@ abstract class Control(shared: Shared1) extends SimpleUnit with Deferred {
           if (shared.player.canShot) {
             shared.player.canShot = false
             defer(shared.player.balance.shotColdown, () => shared.player.canShot = true)
+            defer(0.4f, () => {
+              if (shared.player.state == SHOOTING) {
+                shared.player.state = IDLE  
+              }
+            })
           
             val x = Const.Projection.calcX(screenX)
             val y = Const.Projection.calcY(screenY)
@@ -60,7 +65,8 @@ abstract class Control(shared: Shared1) extends SimpleUnit with Deferred {
                 Intersector.intersectSegmentCircle(segment._1, segment._2, entity.pos, Math.pow(entity.radius, 2f).toFloat)
               })
             })
-  
+
+            shared.player.state = SHOOTING
             onShoot(heroPoint, point1, point2, entity)
             val entityName = if (entity.isDefined) {
               entity.get.name
@@ -122,49 +128,54 @@ abstract class Control(shared: Shared1) extends SimpleUnit with Deferred {
     if (shared.player.state == KILLED) return
 
     if (!shared.player.state.equals(JUMPING)) {
-      if (controlKeysPressed()) {
-        shared.player.state = RUNNING
+      if (controlKeysPressed() || (Gdx.input.isKeyPressed(Input.Keys.SPACE) && shared.player.canJump)) {
+        if (controlKeysPressed()) {
+          shared.player.state = RUNNING
 
-        var speedX = 0f
-        var speedY = 0f
-        val speed = Const.gamerSpeed()
+          var speedX = 0f
+          var speedY = 0f
+          val speed = Const.gamerSpeed()
 
-        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-          speedX -= speed
+          if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+            speedX -= speed
+          }
+
+          if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+            speedX += speed
+          }
+
+          if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+            speedY += speed
+          }
+
+          if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+            speedY -= speed
+          }
+
+          movePlayer(speedX, speedY)
+          onMove()
         }
 
-        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-          speedX += speed
+        if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && shared.player.canJump) {
+          shared.player.state = JUMPING
+          shared.player.canJump = false
+          defer(Balance.jumpTime, () => {
+            shared.player.state = IDLE
+            shared.player.scale = 1.0f
+            shared.jumpTime = 0
+          })
+
+          defer(Balance.jumpCoolDown, () => {
+            shared.player.canJump = true
+          })
+
+          shared.jumpingAngle = shared.player.angle
+          onJump()
         }
-
-        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-          speedY += speed
-        }
-
-        if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-          speedY -= speed
-        }
-
-        movePlayer(speedX, speedY)
-        onMove()
-
-      } else if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && shared.player.canJump) {
-        shared.player.state = JUMPING
-        shared.player.canJump = false
-        defer(Balance.jumpTime, () => {
-          shared.player.state = IDLE
-          shared.player.scale = 1.0f
-          shared.jumpTime = 0
-        })
-
-        defer(Balance.jumpCoolDown, () => {
-          shared.player.canJump = true
-        })
-
-        shared.jumpingAngle = shared.player.angle
-        onJump()
       } else {
-        shared.player.state = IDLE
+        if (shared.player.state != SHOOTING) {
+          shared.player.state = IDLE
+        }
         onIdle()
       }
     } else {

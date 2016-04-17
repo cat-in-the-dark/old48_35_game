@@ -23,7 +23,7 @@ object Assets {
   object Textures {
     val logo = new Texture(Gdx.files.internal("textures/logo.png"))
 
-//    val t0 = new Texture(Gdx.files.internal("textures/start_screen.png"))
+    val t0 = new Texture(Gdx.files.internal("textures/title.jpg"))
 //    val t1 = new Texture(Gdx.files.internal("textures/tut1eng.png"))
 //    val t2 = new Texture(Gdx.files.internal("textures/tut2eng.png"))
 //    val t3 = new Texture(Gdx.files.internal("textures/tut3eng.png"))

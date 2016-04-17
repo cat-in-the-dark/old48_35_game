@@ -27,6 +27,6 @@ class Shared1(val shared0: Shared0,
     if (shared0.networkControl.isServer)
       (Player(spawnPlayer, IDLE, Assets.Animations.HunterAnimationPack, Assets.Audios.HunterAudioPack, Const.Balance.hunterBalance, 0, 1f, canJump = false), Enemy(spawnEnemy, IDLE, Assets.Animations.WolfAnimationPack, Assets.Audios.WolfAudioPack, 0, 1f))
     else
-      (Player(spawnPlayer, IDLE, Assets.Animations.WolfAnimationPack, Assets.Audios.WolfAudioPack, Const.Balance.wolfBalance, 0, 1f, canJump = true), Enemy(spawnEnemy, IDLE, Assets.Animations.HunterAnimationPack, Assets.Audios.HunterAudioPack, 0, 1f))
+      (Player(spawnEnemy, IDLE, Assets.Animations.WolfAnimationPack, Assets.Audios.WolfAudioPack, Const.Balance.wolfBalance, 0, 1f, canJump = true), Enemy(spawnPlayer, IDLE, Assets.Animations.HunterAnimationPack, Assets.Audios.HunterAudioPack, 0, 1f))
   }
 }
