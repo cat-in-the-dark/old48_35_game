@@ -104,29 +104,31 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
       shared.player.audio.ricochet.play()
     }
     
-    val task = () => {
-//      clipShaderSame.begin()
-//      clipShaderSame.setUniformf("pos", shared.player.pos.x, shared.player.pos.y)
-//      clipShader.setUniformf("resolution", Gdx.graphics.getWidth, Gdx.graphics.getHeight)
-//      clipShaderSame.setUniformf("cam_pos", camera.position.x, camera.position.y)
-//      clipShaderSame.setUniformf("player_rot", shared.player.angle)
-//      clipShaderSame.setUniformf("max_dist", shared.player.balance.maxRadius)
-//      clipShaderSame.setUniformf("phi", shared.player.balance.viewAngle)
-      shapeRenderer.begin(ShapeType.Filled)
+    if (Const.debugEnabled()) {
+      val task = () => {
+        //      clipShaderSame.begin()
+        //      clipShaderSame.setUniformf("pos", shared.player.pos.x, shared.player.pos.y)
+        //      clipShader.setUniformf("resolution", Gdx.graphics.getWidth, Gdx.graphics.getHeight)
+        //      clipShaderSame.setUniformf("cam_pos", camera.position.x, camera.position.y)
+        //      clipShaderSame.setUniformf("player_rot", shared.player.angle)
+        //      clipShaderSame.setUniformf("max_dist", shared.player.balance.maxRadius)
+        //      clipShaderSame.setUniformf("phi", shared.player.balance.viewAngle)
+        shapeRenderer.begin(ShapeType.Filled)
 
-      shapeRenderer.setColor(1f, 0f, 0f, 0.5f)
-      shapeRenderer.triangle(
-        playerPos.x, playerPos.y, 
-        shotPoint1.x, shotPoint1.y, 
-        shotPoint2.x, shotPoint2.y)
+        shapeRenderer.setColor(1f, 0f, 0f, 0.5f)
+        shapeRenderer.triangle(
+          playerPos.x, playerPos.y,
+          shotPoint1.x, shotPoint1.y,
+          shotPoint2.x, shotPoint2.y)
 
-      shapeRenderer.end()
-      //clipShaderSame.end()
+        shapeRenderer.end()
+        //clipShaderSame.end()
+      }
+      renderList += task
+      defer(2f, () => {
+        renderList -= task
+      })
     }
-    renderList += task
-    defer(2f, () => {
-      renderList -= task
-    })
   }
 
   def onIdle(u: Unit): Unit = {
