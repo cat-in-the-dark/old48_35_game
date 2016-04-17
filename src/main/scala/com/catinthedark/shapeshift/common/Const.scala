@@ -111,6 +111,17 @@ object Const extends ConstDelegate {
 
     val jumpTime = 1f
     val jumpCoolDown = 5f
+    
+    val distanceHear = 1000f
+    def distanceToVolume(distance: Float): Float = {
+      // На каждые 200 пикселей громкость падает в 2 раза
+      val v = Math.pow(2, distance / -200).toFloat
+      if (v < 0.01f) {
+        0
+      } else {
+        v
+      }
+    }
 
     trait playerBalance {
       val maxRadius: Int
