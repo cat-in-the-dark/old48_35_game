@@ -13,6 +13,7 @@ sealed trait Entity {
   var pos: Vector2
   var radius: Float
   def texture(delta: Float = 0): TextureRegion
+  def name: String
 }
 
 case class Enemy(var pos: Vector2, var state: State, pack: PlayerAnimationPack, var angle: Float) extends Entity {
@@ -37,6 +38,8 @@ case class Enemy(var pos: Vector2, var state: State, pack: PlayerAnimationPack, 
   }
 
   override var radius: Float = UI.playerPhysRadius
+
+  override def name: String = "Enemy"
 }
 
 case class Player(var pos: Vector2, var state: State, pack: PlayerAnimationPack, balance: playerBalance, var angle: Float) extends Entity {
@@ -61,6 +64,8 @@ case class Player(var pos: Vector2, var state: State, pack: PlayerAnimationPack,
   def physRect: Rectangle = {
     new Rectangle(pos.x, pos.y, Const.UI.playerUpPhysWH().x, Const.UI.playerUpPhysWH().y)
   }
+  
+  override def name: String = "Player"
 
   override var radius: Float = UI.playerPhysRadius
 }
@@ -71,4 +76,6 @@ case class Tree(var pos: Vector2, private val texture: Texture) extends Entity {
   override def texture(delta: Float): TextureRegion = region
 
   override var radius: Float = UI.treePhysRadius
+
+  override def name: String = "Tree"
 }
