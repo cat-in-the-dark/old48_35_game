@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.{Intersector, MathUtils, Vector2}
 import com.badlogic.gdx.{Gdx, Input, InputAdapter}
 import com.catinthedark.lib._
 import com.catinthedark.shapeshift.common.Const
-import com.catinthedark.shapeshift.common.Const.{Projection, UI}
+import com.catinthedark.shapeshift.common.Const.{Balance, Projection, UI}
 import com.catinthedark.shapeshift.entity.{Enemy, Entity, Tree}
 import com.catinthedark.shapeshift.view._
 
@@ -16,11 +16,8 @@ abstract class Control(shared: Shared1) extends SimpleUnit with Deferred {
   val onPlayerStateChanged = new Pipe[State]()
   val onShoot = new Pipe[(Vector2, Vector2, Vector2, Option[Entity])]()
   val onGameReload = new Pipe[Unit]()
-//  val onMoveLeft = new Pipe[Unit]()
-//  val onMoveRight = new Pipe[Unit]()
-//  val onMoveForward = new Pipe[Unit]()
-//  val onMoveBackward = new Pipe[Unit]()
   val onIdle = new Pipe[Unit]()
+  val onJump = new Pipe[Unit]()
 
   val STAND_KEY = Input.Keys.CONTROL_LEFT
 
@@ -75,63 +72,16 @@ abstract class Control(shared: Shared1) extends SimpleUnit with Deferred {
     })
   }
 
-  def onMove(speedX: Float, speedY: Float): Unit = {
-    shared.player.pos.x += speedX
-    shared.player.pos.y += speedY
+  def onMove(): Unit = {
     shared.shared0.networkControl.move(shared.player.pos, shared.player.angle, idle = false)
   }
 
-  def onMoveLeft(u: Unit): Unit = {
-    val speed = Const.gamerSpeed()
-    shared.player.pos.x -= speed
-    shared.shared0.networkControl.move(shared.player.pos, shared.player.angle, idle = false)
-  }
+  def movePlayer(speedX: Float, speedY: Float): Unit  = {
+    var newSpeedX = speedX
+    var newSpeedY = speedY
+    val predictedPos = new Vector2(shared.player.pos.x + speedX, shared.player.pos.y + speedY)
 
-  def onMoveRight(u: Unit): Unit = {
-    val speed = Const.gamerSpeed()
-    shared.player.pos.x += speed
-    shared.shared0.networkControl.move(shared.player.pos, shared.player.angle, idle = false)
-  }
-
-  def onMoveForward(u: Unit): Unit = {
-    val speed = Const.gamerSpeed()
-    shared.player.pos.y += speed
-    shared.shared0.networkControl.move(shared.player.pos, shared.player.angle, idle = false)
-  }
-
-  def onMoveBackward(u: Unit): Unit = {
-    val speed = Const.gamerSpeed()
-    shared.player.pos.y -= speed
-    shared.shared0.networkControl.move(shared.player.pos, shared.player.angle, idle = false)
-  }
-
-  override def run(delta: Float): Unit = {
-    if (shared.player.state == KILLED) return 
-    
-    if (controlKeysPressed()) {
-      shared.player.state = RUNNING
-
-      val speed = Const.gamerSpeed()
-      var speedX = 0f
-      var speedY = 0f
-      if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-        speedX -= speed
-      }
-
-      if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-        speedX += speed
-      }
-
-      if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-        speedY += speed
-      }
-
-      if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-        speedY -= speed
-      }
-
-      val predictedPos = new Vector2(shared.player.pos.x + speedX, shared.player.pos.y + speedY)
-
+    if (!shared.player.state.equals(JUMPING)) {
       shared.entities.foreach(entity => {
         entity match {
           case tree: Tree => {
@@ -140,26 +90,87 @@ abstract class Control(shared: Shared1) extends SimpleUnit with Deferred {
               val angle = Math.atan2(entity.pos.y - predictedPos.y, entity.pos.x - predictedPos.x).toFloat
               val newPosX = predictedPos.x + predictDistance * Math.cos(angle).toFloat
               val newPosY = predictedPos.y + predictDistance * Math.sin(angle).toFloat
-              speedX = newPosX - shared.player.pos.x
-              speedY = newPosY - shared.player.pos.y
+              newSpeedX = newPosX - shared.player.pos.x
+              newSpeedY = newPosY - shared.player.pos.y
             }
           }
           case _ =>
         }
       })
+    }
 
-      if (predictedPos.x > Projection.mapWidth || predictedPos.x < 0) {
-        speedX = 0
+    if (predictedPos.x > Projection.mapWidth || predictedPos.x < 0) {
+      newSpeedX = 0
+    }
+
+    if (predictedPos.y > Projection.mapHeight || predictedPos.y < 0) {
+      newSpeedY = 0
+    }
+
+    shared.player.pos.x += newSpeedX
+    shared.player.pos.y += newSpeedY
+  }
+
+  override def run(delta: Float): Unit = {
+    if (shared.player.state == KILLED) return
+
+    if (!shared.player.state.equals(JUMPING)) {
+      if (controlKeysPressed()) {
+        shared.player.state = RUNNING
+
+        var speedX = 0f
+        var speedY = 0f
+        val speed = Const.gamerSpeed()
+
+        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+          speedX -= speed
+        }
+
+        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+          speedX += speed
+        }
+
+        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+          speedY += speed
+        }
+
+        if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+          speedY -= speed
+        }
+
+        movePlayer(speedX, speedY)
+        onMove()
+
+      } else if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && shared.player.canJump) {
+        shared.player.state = JUMPING
+        shared.player.canJump = false
+        defer(Balance.jumpTime, () => {
+          shared.player.state = IDLE
+          shared.player.scale = 1.0f
+          shared.jumpTime = 0
+        })
+
+        defer(Balance.jumpCoolDown, () => {
+          shared.player.canJump = true
+        })
+
+        shared.jumpingAngle = shared.player.angle
+        onJump()
+      } else {
+        shared.player.state = IDLE
+        onIdle()
       }
-
-      if (predictedPos.y > Projection.mapHeight || predictedPos.y < 0) {
-        speedY = 0
-      }
-
-      onMove(speedX, speedY)
     } else {
-      shared.player.state = IDLE
-      onIdle()
+      val speedX = Const.gamerJumpSpeed() * Math.cos(Math.toRadians(shared.jumpingAngle)).toFloat
+      val speedY = Const.gamerJumpSpeed() * Math.sin(Math.toRadians(shared.jumpingAngle)).toFloat
+      movePlayer(speedX, speedY)
+      shared.jumpTime += delta
+      if (shared.jumpTime <= Balance.jumpTime / 2) {
+        shared.player.scale += delta
+      } else {
+        shared.player.scale -= delta
+      }
+      onJump()
     }
   }
   

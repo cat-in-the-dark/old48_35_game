@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.{Affine2, Vector2}
 import com.catinthedark.lib.{Deferred, MagicSpriteBatch, SimpleUnit}
 import com.catinthedark.shapeshift.Assets
 import com.catinthedark.shapeshift.view.{IDLE, KILLED, RUNNING, SHOOTING}
+import com.catinthedark.shapeshift.view.{JUMPING, IDLE, RUNNING}
 
 abstract class EnemyView(val shared: Shared1) extends SimpleUnit with Deferred {
   def onMove(data: (Vector2, Float, Boolean)): Unit = {
@@ -16,6 +17,14 @@ abstract class EnemyView(val shared: Shared1) extends SimpleUnit with Deferred {
     } else {
       RUNNING
     }
+    shared.enemy.scale = 1f
+  }
+
+  def onJump(data: (Vector2, Float, Float)): Unit = {
+    shared.enemy.pos = data._1
+    shared.enemy.angle = data._2
+    shared.enemy.scale = data._3
+    shared.enemy.state = JUMPING
   }
   
   def onShoot(data: (Vector2, String)): Unit = {
@@ -28,17 +37,17 @@ abstract class EnemyView(val shared: Shared1) extends SimpleUnit with Deferred {
       case "Enemy" =>
         println("I killed")
         shared.player.state = KILLED
-        //Assets.Audios.headShot.play()
+        shared.enemy.audio.shoot.play()
       case "Tree" =>
         println("Tree ricochet")
-        //Assets.Audios.ricochetTree.play()
+        shared.enemy.audio.ricochetWood.play()
       case _ =>
         println("Ricochet")
-        //Assets.Audios.ricochet.play()
+        shared.enemy.audio.ricochet.play()
     }
   }
 
   def render(delta: Float, magicBatch: MagicSpriteBatch) = {
-    magicBatch.drawWithDebug(shared.enemy.texture(delta), shared.enemy.rect, shared.enemy.physRect, angle = shared.enemy.angle)
+    magicBatch.drawWithDebug(shared.enemy.texture(delta), shared.enemy.rect, shared.enemy.physRect, angle = shared.enemy.angle, scaleX = shared.enemy.scale, scaleY = shared.enemy.scale)
   }
 }

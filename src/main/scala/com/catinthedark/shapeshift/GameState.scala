@@ -20,6 +20,7 @@ class GameState(shared0: Shared0) extends YieldUnit[Boolean] {
 
   control.onShoot.ports += view.onShot
   control.onIdle.ports += view.onIdle
+  control.onJump.ports += view.onJump
   
   control.onGameReload + (_ => {
     forceReload = true
