@@ -96,7 +96,7 @@ object Const extends ConstDelegate {
   }
 
   object Balance {
-    def playerStartPos = new Vector2(0f, 0f)
+    def playerStartPos = new Vector2(50f, 50f)
 
     trait playerBalance {
       val maxRadius: Int

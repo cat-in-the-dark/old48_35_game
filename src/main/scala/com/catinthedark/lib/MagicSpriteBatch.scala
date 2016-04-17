@@ -11,12 +11,12 @@ class MagicSpriteBatch(debugOn: => Boolean) extends SpriteBatch {
 
   def drawWithDebug(t: TextureRegion, viewPos: Rectangle, physPos: Rectangle, centerX: Boolean = true, centerY: Boolean = true, angle: Float = 0f): Unit = {
     draw(t, 
-      viewPos.x - (if (centerX) t.getRegionWidth / 2 else 0),
-      viewPos.y - (if (centerX) t.getRegionHeight / 2 else 0),
-      t.getRegionWidth / 2f,
-      t.getRegionHeight / 2f,
-      t.getRegionWidth,
-      t.getRegionHeight,
+      viewPos.x - (if (centerX) viewPos.width / 2 else 0),
+      viewPos.y - (if (centerX) viewPos.height / 2 else 0),
+      viewPos.width / 2f,
+      viewPos.height / 2f,
+      viewPos.width,
+      viewPos.height,
       1f, 1f, angle, true)
 
     if (debugOn) debug.rect(
