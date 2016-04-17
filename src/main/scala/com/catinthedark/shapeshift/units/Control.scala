@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.{MathUtils, Vector2}
 import com.badlogic.gdx.{Gdx, Input, InputAdapter}
 import com.catinthedark.lib._
 import com.catinthedark.shapeshift.common.Const
+import com.catinthedark.shapeshift.common.Const.UI
 import com.catinthedark.shapeshift.view._
 
 /**
@@ -14,10 +15,10 @@ abstract class Control(shared: Shared1) extends SimpleUnit with Deferred {
   val onPlayerStateChanged = new Pipe[State]()
   val onShoot = new Pipe[(Vector2, Vector2, Vector2)]()
   val onGameReload = new Pipe[Unit]()
-  val onMoveLeft = new Pipe[Unit]()
-  val onMoveRight = new Pipe[Unit]()
-  val onMoveForward = new Pipe[Unit]()
-  val onMoveBackward = new Pipe[Unit]()
+//  val onMoveLeft = new Pipe[Unit]()
+//  val onMoveRight = new Pipe[Unit]()
+//  val onMoveForward = new Pipe[Unit]()
+//  val onMoveBackward = new Pipe[Unit]()
   val onIdle = new Pipe[Unit]()
 
   val STAND_KEY = Input.Keys.CONTROL_LEFT
@@ -55,25 +56,73 @@ abstract class Control(shared: Shared1) extends SimpleUnit with Deferred {
     })
   }
 
+  def onMove(speedX: Float, speedY: Float): Unit = {
+    shared.player.pos.x += speedX
+    shared.player.pos.y += speedY
+    shared.shared0.networkControl.move(shared.player.pos, shared.player.angle, idle = false)
+  }
+
+  def onMoveLeft(u: Unit): Unit = {
+    val speed = Const.gamerSpeed()
+    shared.player.pos.x -= speed
+    shared.shared0.networkControl.move(shared.player.pos, shared.player.angle, idle = false)
+  }
+
+  def onMoveRight(u: Unit): Unit = {
+    val speed = Const.gamerSpeed()
+    shared.player.pos.x += speed
+    shared.shared0.networkControl.move(shared.player.pos, shared.player.angle, idle = false)
+  }
+
+  def onMoveForward(u: Unit): Unit = {
+    val speed = Const.gamerSpeed()
+    shared.player.pos.y += speed
+    shared.shared0.networkControl.move(shared.player.pos, shared.player.angle, idle = false)
+  }
+
+  def onMoveBackward(u: Unit): Unit = {
+    val speed = Const.gamerSpeed()
+    shared.player.pos.y -= speed
+    shared.shared0.networkControl.move(shared.player.pos, shared.player.angle, idle = false)
+  }
+
   override def run(delta: Float): Unit = {
     if (controlKeysPressed()) {
       shared.player.state = RUNNING
-      
-      if (Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.D)) {
-        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-          onMoveLeft()
-        } else {
-          onMoveRight()
-        }
+
+      val speed = Const.gamerSpeed()
+      var speedX = 0f
+      var speedY = 0f
+      if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+        speedX -= speed
       }
 
-      if (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.S)) {
-        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-          onMoveForward()
-        } else {
-          onMoveBackward()
-        }
+      if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+        speedX += speed
       }
+
+      if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+        speedY += speed
+      }
+
+      if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+        speedY -= speed
+      }
+
+      val predictedPos = new Vector2(shared.player.pos.x + speedX, shared.player.pos.y + speedY)
+
+      shared.trees.foreach(tree => {
+        val predictDistance = predictedPos.dst(new Vector2(tree.x, tree.y)) - UI.playerPhysRadius - UI.treePhysRadius
+        if (predictDistance <= 0) {
+          val angle = Math.atan2(tree.y - predictedPos.y, tree.x - predictedPos.x).toFloat
+          val newPosX = predictedPos.x + predictDistance * Math.cos(angle).toFloat
+          val newPosY = predictedPos.y + predictDistance * Math.sin(angle).toFloat
+          speedX = newPosX - shared.player.pos.x
+          speedY = newPosY - shared.player.pos.y
+        }
+      })
+
+      onMove(speedX, speedY)
     } else {
       shared.player.state = IDLE
       onIdle()

@@ -28,7 +28,6 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
   val batch = new SpriteBatch()
   val magicBatch = new MagicSpriteBatch(Const.debugEnabled())
   val shapeRenderer = new ShapeRenderer()
-  var trees = mutable.ListBuffer[Tree]()
 
   val enemyView = new EnemyView(shared) with LocalDeferred
   val camera = new OrthographicCamera(Const.Projection.width, Const.Projection.height)
@@ -55,10 +54,10 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
       val tree = mapTrees.next()
       val x = tree.getProperties.get("x", classOf[Float])
       val y = tree.getProperties.get("y", classOf[Float])
-      trees += new Tree(x, y, Const.Balance.treeRadius, layerToTexture(layer.getName))
+      shared.trees += new Tree(x, y, UI.treePhysRadius, layerToTexture(layer.getName))
     }
   }
-  
+
   def onShot(data: (Vector2, Vector2, Vector2)): Unit = {
     println(s"View onShot: $data")
     
@@ -83,30 +82,6 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
     })
   }
 
-  def onMoveLeft(u: Unit): Unit = {
-    val speed = Const.gamerSpeed()
-    shared.player.pos.x -= speed
-    shared.shared0.networkControl.move(shared.player.pos, shared.player.angle, idle = false)
-  }
-
-  def onMoveRight(u: Unit): Unit = {
-    val speed = Const.gamerSpeed()
-    shared.player.pos.x += speed
-    shared.shared0.networkControl.move(shared.player.pos, shared.player.angle, idle = false)
-  }
-
-  def onMoveForward(u: Unit): Unit = {
-    val speed = Const.gamerSpeed()
-    shared.player.pos.y += speed
-    shared.shared0.networkControl.move(shared.player.pos, shared.player.angle, idle = false)
-  }
-
-  def onMoveBackward(u: Unit): Unit = {
-    val speed = Const.gamerSpeed()
-    shared.player.pos.y -= speed
-    shared.shared0.networkControl.move(shared.player.pos, shared.player.angle, idle = false)
-  }
-  
   def onIdle(u: Unit): Unit = {
     shared.shared0.networkControl.move(shared.player.pos, shared.player.angle, idle = true)
   }
@@ -177,16 +152,11 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
     drawFloor()
     enemyView.run(delta)
 
-//    val layers = Assets.Maps.map1.getLayers
-//    drawTreeLayer(layers.get("tree1"))
-//    drawTreeLayer(layers.get("tree2"))
-//    drawTreeLayer(layers.get("tree3"))
-
-    trees = trees.sortWith((a, b) => {
+    shared.trees = shared.trees.sortWith((a, b) => {
       shared.player.pos.dst(a.x, a.y) > shared.player.pos.dst(b.x, b.y)
     })
 
-    trees.foreach(tree => {
+    shared.trees.foreach(tree => {
       val pos = shared.player.pos
       val maxRadius = shared.player.balance.maxRadius
       val distance = pos.dst(tree.x, tree.y)
@@ -198,7 +168,7 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
         shapeRenderer.setColor(UI.darknessColor)
 
         val alpha = Math.atan2(tree.y - pos.y, tree.x - pos.x)
-        val beta = Math.asin(Balance.treeRadius / distance)
+        val beta = Math.asin(UI.treePhysRadius / distance)
         val x1 = (pos.x + distance * Math.cos(alpha - beta)).toFloat
         val y1 = (pos.y + distance * Math.sin(alpha - beta)).toFloat
         val x2 = (pos.x + distance * Math.cos(alpha + beta)).toFloat

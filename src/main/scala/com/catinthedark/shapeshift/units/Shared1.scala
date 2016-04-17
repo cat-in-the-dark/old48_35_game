@@ -2,11 +2,14 @@ package com.catinthedark.shapeshift.units
 
 import com.catinthedark.shapeshift.{Assets, Shared0}
 import com.catinthedark.shapeshift.common.Const
-import com.catinthedark.shapeshift.entity.{Enemy, Player}
+import com.catinthedark.shapeshift.entity.{Tree, Enemy, Player}
 import com.catinthedark.shapeshift.view.IDLE
 
+import scala.collection.mutable
 
-class Shared1(val shared0: Shared0) {
+
+class Shared1(val shared0: Shared0,
+              var trees: mutable.ListBuffer[Tree]) {
   def reset() = {
     
   }

@@ -54,6 +54,7 @@ object Const extends ConstDelegate {
 
     val enemyUpPhysWH = vec2Range("enemy up phys width height", new Vector2(120, 150))
     val treePhysRadius = 180f / 2
+    val playerPhysRadius = 50f
 
     val rayLength = 1000
 
@@ -96,7 +97,6 @@ object Const extends ConstDelegate {
 
   object Balance {
     def playerStartPos = new Vector2(0f, 0f)
-    val treeRadius = 50
 
     trait playerBalance {
       val maxRadius: Int

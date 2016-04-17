@@ -52,5 +52,5 @@ case class Player(var pos: Vector2, var state: State, var frags: Int, pack: Play
   }
 }
 
-case class Tree(var x: Float, var y: Float, var radius: Int, texture: Texture) {
+case class Tree(var x: Float, var y: Float, var radius: Float, texture: Texture) {
 }
