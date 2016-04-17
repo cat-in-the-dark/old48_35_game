@@ -13,6 +13,11 @@ object Assets {
   object Maps {
     val map1: TiledMap = new TmxMapLoader().load("map.tmx")
   }
+  object Shaders {
+    val clipVert = Gdx.files.internal("shaders/clip.vert")
+    val clipVert1 = Gdx.files.internal("shaders/clip_1.vert")
+    val clipFrag = Gdx.files.internal("shaders/clip.frag")
+  }
   object Textures {
     val logo = new Texture(Gdx.files.internal("textures/logo.png"))
 
