@@ -1,18 +1,24 @@
 package com.catinthedark.shapeshift
 
-import com.badlogic.gdx.Input
-import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.{Gdx, Input}
+import com.badlogic.gdx.graphics.{GL20, Texture}
+import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.catinthedark.lib.{KeyAwaitState, Stub, TextureState}
+import com.catinthedark.lib.Magic._
 
-class GameWinScreen(val shared: Shared0) extends Stub("GameWin") with TextureState with KeyAwaitState {
+class GameWinScreen(val shared: Shared0) extends Stub("GameWin")  with KeyAwaitState {
   override val keycode: Int = Input.Keys.ENTER
-  override val texture: Texture = if (shared.networkControl.isServer) {
-    Assets.Textures.HunterThemePack.winScreen
-  } else {
-    Assets.Textures.WolfThemePack.winScreen
-  }
+
+  val batch = new SpriteBatch
 
   override def onActivate(): Unit = {
     super.onActivate()
+  }
+
+  override def run(delta: Float): Option[Unit] = {
+    batch.managed { self: SpriteBatch =>
+      self.draw(Assets.Textures.won, 0, 0)
+    }
+    super.run(delta)
   }
 }

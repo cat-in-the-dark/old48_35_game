@@ -73,6 +73,7 @@ trait NetworkControl extends Runnable {
               isConnected = Some()
             case GAMEOVER_PREFIX =>
               detectedGameEnd = true
+              shouldStop = true
             case _ => println(s"UPS, wrong prefix $rawData")
           }
         }

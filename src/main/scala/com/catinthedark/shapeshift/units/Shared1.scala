@@ -10,11 +10,14 @@ import scala.collection.mutable
 
 class Shared1(val shared0: Shared0,
               var entities: mutable.ListBuffer[Entity]) {
-  def reset() = {
-    
-  }
-  
   var (player, enemy) = init()
+
+  def reset() = {
+    entities.clear()
+    val pe = init()
+    player = pe._1
+    enemy = pe._2
+  }
   
   def init() = {
     val (spawnPlayer, spawnEnemy) = Const.Balance.randomSpawn

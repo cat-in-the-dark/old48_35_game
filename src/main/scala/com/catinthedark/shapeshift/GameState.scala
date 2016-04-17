@@ -49,6 +49,7 @@ class GameState(shared0: Shared0) extends YieldUnit[Boolean] {
     //Assets.Audios.bgm.stop()
     children.foreach(_.onExit())
     shared1.reset()
+    shared0.networkControlThread.interrupt()
   }
 
   override def run(delta: Float): Option[Boolean] = {
