@@ -46,12 +46,12 @@ object Const extends ConstDelegate {
     
     val playerY = frange("player y", 10, Some(0), Some(500))
     val playerMinX = frange("player min x", 41, Some(0), Some(500))
-    val playerUpWH = vec2Range("player up width height", new Vector2(140, 180))
+    val playerUpWH = vec2Range("player up width height", new Vector2(180, 128))
     val playerDownWH = vec2Range("player down width height", new Vector2(320, 300))
     val playerUpPhysWH = vec2Range("enemy up phys width height", new Vector2(120, 150))
     
     val enemyY = frange("enemy y", 415, Some(100), Some(652))
-    val enemyUpWH = vec2Range("enemy up width height", new Vector2(140, 180))
+    val enemyUpWH = vec2Range("enemy up width height", new Vector2(180, 128))
     val enemyDownWH = vec2Range("enemy down width height", new Vector2(80, 96))
 
     val enemyUpPhysWH = vec2Range("enemy up phys width height", new Vector2(120, 150))
