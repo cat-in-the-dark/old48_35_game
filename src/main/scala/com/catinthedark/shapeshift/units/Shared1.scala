@@ -19,8 +19,8 @@ class Shared1(val shared0: Shared0,
   def init() = {
     val (spawnPlayer, spawnEnemy) = Const.Balance.randomSpawn
     if (shared0.networkControl.isServer)
-      (Player(spawnPlayer, IDLE, Assets.Animations.HunterAnimationPack, Const.Balance.hunterBalance, 0), Enemy(spawnEnemy, IDLE, Assets.Animations.WolfAnimationPack, 0))
+      (Player(spawnPlayer, IDLE, Assets.Animations.HunterAnimationPack, Assets.Audios.HunterAudioPack, Const.Balance.hunterBalance, 0), Enemy(spawnEnemy, IDLE, Assets.Animations.WolfAnimationPack, Assets.Audios.WolfAudioPack, 0))
     else
-      (Player(spawnPlayer, IDLE, Assets.Animations.WolfAnimationPack, Const.Balance.wolfBalance, 0), Enemy(spawnEnemy, IDLE, Assets.Animations.HunterAnimationPack, 0))
+      (Player(spawnPlayer, IDLE, Assets.Animations.WolfAnimationPack, Assets.Audios.WolfAudioPack, Const.Balance.wolfBalance, 0), Enemy(spawnEnemy, IDLE, Assets.Animations.HunterAnimationPack, Assets.Audios.HunterAudioPack, 0))
   }
 }

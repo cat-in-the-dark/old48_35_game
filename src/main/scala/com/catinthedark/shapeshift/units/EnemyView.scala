@@ -28,13 +28,13 @@ abstract class EnemyView(val shared: Shared1) extends SimpleUnit with Deferred {
       case "Enemy" =>
         println("I killed")
         shared.player.state = KILLED
-        //Assets.Audios.headShot.play()
+        shared.enemy.audio.shoot.play()
       case "Tree" =>
         println("Tree ricochet")
-        //Assets.Audios.ricochetTree.play()
+        shared.enemy.audio.ricochetWood.play()
       case _ =>
         println("Ricochet")
-        //Assets.Audios.ricochet.play()
+        shared.enemy.audio.ricochet.play()
     }
   }
 

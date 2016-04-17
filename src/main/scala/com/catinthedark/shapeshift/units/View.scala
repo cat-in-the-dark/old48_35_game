@@ -87,14 +87,18 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
       entity.get match {
         case _: Tree =>
           println("Tree collide")
+          shared.player.audio.ricochetWood.play()
         case _: Enemy =>
           println("Enemy collide")
           shared.enemy.state = KILLED
+          shared.player.audio.shoot.play()
         case _ =>
           println("Here")
+          shared.player.audio.ricochet.play()
       }
     } else {
       println("Ricoshet")
+      shared.player.audio.ricochet.play()
     }
     
     val task = () => {

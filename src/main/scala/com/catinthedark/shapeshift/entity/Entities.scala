@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.{Rectangle, Vector2}
 import com.catinthedark.shapeshift.Assets.Animations.PlayerAnimationPack
+import com.catinthedark.shapeshift.Assets.Audios.PlayerAudioPack
 import com.catinthedark.shapeshift.common.Const
 import com.catinthedark.shapeshift.common.Const.Balance.playerBalance
 import com.catinthedark.shapeshift.common.Const.UI
@@ -16,13 +17,16 @@ sealed trait Entity {
   def name: String
 }
 
-case class Enemy(var pos: Vector2, var state: State, pack: PlayerAnimationPack, var angle: Float) extends Entity {
+case class Enemy(var pos: Vector2, var state: State, pack: PlayerAnimationPack, audio: PlayerAudioPack, var angle: Float) extends Entity {
   var animationCounter = 0f
 
   def texture (delta: Float) = {
     state match {
       case IDLE =>
         pack.idle
+      case SHOOTING =>
+        animationCounter += delta
+        pack.shooting.getKeyFrame(animationCounter)
       case _ =>
         animationCounter += delta
         pack.running.getKeyFrame(animationCounter)
@@ -42,7 +46,7 @@ case class Enemy(var pos: Vector2, var state: State, pack: PlayerAnimationPack, 
   override def name: String = "Enemy"
 }
 
-case class Player(var pos: Vector2, var state: State, pack: PlayerAnimationPack, balance: playerBalance, var angle: Float) extends Entity {
+case class Player(var pos: Vector2, var state: State, pack: PlayerAnimationPack, audio: PlayerAudioPack, balance: playerBalance, var angle: Float) extends Entity {
 
   var animationCounter = 0f
   var coolDown = false
@@ -51,6 +55,9 @@ case class Player(var pos: Vector2, var state: State, pack: PlayerAnimationPack,
     state match {
       case IDLE => 
         pack.idle
+      case SHOOTING =>
+        animationCounter += delta
+        pack.shooting.getKeyFrame(animationCounter)
       case _ =>
         animationCounter += delta
         pack.running.getKeyFrame(animationCounter)

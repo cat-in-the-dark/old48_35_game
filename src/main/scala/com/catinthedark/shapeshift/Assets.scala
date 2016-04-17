@@ -1,11 +1,12 @@
 package com.catinthedark.shapeshift
 
+import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.Texture.TextureWrap
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter
 import com.badlogic.gdx.graphics.g2d.{Animation, TextureRegion}
 import com.badlogic.gdx.graphics.{Pixmap, Texture}
-import com.badlogic.gdx.maps.tiled.{TmxMapLoader, TiledMap}
+import com.badlogic.gdx.maps.tiled.{TiledMap, TmxMapLoader}
 import com.badlogic.gdx.{Gdx, utils}
 import com.catinthedark.shapeshift.common.Const
 
@@ -110,7 +111,24 @@ object Assets {
   object Audios {
     val bgm = Gdx.audio.newMusic(Gdx.files.internal("sound/bgm.mp3"))
     bgm.setLooping(true)
-    val shoot = Gdx.audio.newSound(Gdx.files.internal("sound/shoot.mp3"))
-    val ricochet = Gdx.audio.newSound(Gdx.files.internal("sound/ricochet.mp3"))
+    
+    
+    trait PlayerAudioPack {
+      val shoot: Sound
+      val ricochet: Sound
+      val ricochetWood: Sound
+    }
+    
+    object HunterAudioPack extends PlayerAudioPack {
+      override val shoot = Gdx.audio.newSound(Gdx.files.internal("sound/shoot.mp3"))
+      override val ricochet = Gdx.audio.newSound(Gdx.files.internal("sound/ricochet.mp3"))
+      override val ricochetWood = Gdx.audio.newSound(Gdx.files.internal("sound/ricochet.mp3"))
+    }
+
+    object WolfAudioPack extends PlayerAudioPack {
+      override val shoot = Gdx.audio.newSound(Gdx.files.internal("sound/shoot.mp3"))
+      override val ricochet = Gdx.audio.newSound(Gdx.files.internal("sound/ricochet.mp3"))
+      override val ricochetWood = Gdx.audio.newSound(Gdx.files.internal("sound/ricochet.mp3"))
+    }
   }
 }
