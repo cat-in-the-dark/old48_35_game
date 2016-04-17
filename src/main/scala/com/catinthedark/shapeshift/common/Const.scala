@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Vector2
 import com.catinthedark.lib.constants.ConstDelegate
 
+import scala.util.Random
+
 /**
   * Created by over on 11.12.15.
   */
@@ -96,7 +98,12 @@ object Const extends ConstDelegate {
   }
 
   object Balance {
-    def playerStartPos = new Vector2(50f, 50f)
+    val spawnPoints  = Array(
+      (new Vector2(30, 30), new Vector2(570,3100)),
+      (new Vector2(1670, 2500), new Vector2(3000,2700))
+    )
+    def randomSpawn =
+      spawnPoints(new Random().nextInt(spawnPoints.length))
 
     trait playerBalance {
       val maxRadius: Int
