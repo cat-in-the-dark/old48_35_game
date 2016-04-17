@@ -101,8 +101,8 @@ object Const extends ConstDelegate {
 
   object Balance {
     val spawnPoints  = Array(
-      (new Vector2(30, 30), new Vector2(570,3100)),
-      (new Vector2(1670, 2500), new Vector2(3000,2700))
+      (new Vector2(100, 100), new Vector2(570,2700)),
+      (new Vector2(1670, 2500), new Vector2(2500,2700))
     )
     def randomSpawn = {
       val ab = spawnPoints(new Random().nextInt(spawnPoints.length))
