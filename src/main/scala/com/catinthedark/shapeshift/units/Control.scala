@@ -61,6 +61,12 @@ abstract class Control(shared: Shared1) extends SimpleUnit with Deferred {
           })
 
           onShoot(heroPoint, point1, point2, entity)
+          val entityName = if (entity.isDefined) {
+            entity.get.name
+          } else {
+            "None"
+          }
+          shared.shared0.networkControl.shoot(heroPoint, entityName)
           true
         } else {
           false
@@ -100,6 +106,8 @@ abstract class Control(shared: Shared1) extends SimpleUnit with Deferred {
   }
 
   override def run(delta: Float): Unit = {
+    if (shared.player.state == KILLED) return 
+    
     if (controlKeysPressed()) {
       shared.player.state = RUNNING
 
