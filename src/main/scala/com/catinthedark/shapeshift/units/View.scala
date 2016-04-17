@@ -41,6 +41,8 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
   val magicBatch = new MagicSpriteBatch(Const.debugEnabled())
   val playerBatch = new MagicSpriteBatch(Const.debugEnabled())
 
+  val hudBatch = new ShapeRenderer()
+
   magicBatch.setShader(clipShader)
   val shapeRenderer = new ShapeRenderer(5000)
 
@@ -133,8 +135,11 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
     shared.shared0.networkControl.move(shared.player.pos, shared.player.angle, idle = true)
   }
 
+  var lastJump = Const.Balance.jumpCoolDown
+
   def onJump(u: Unit): Unit = {
     shared.shared0.networkControl.jump(shared.player.pos, shared.player.angle, shared.player.scale)
+    lastJump = 0
   }
 
   def layerToTexture(layerName: String) = layerName match {
@@ -293,6 +298,15 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
     }
     
     renderList.foreach(_())
+
+    lastJump += delta * 7
+
+    if(!shared.shared0.networkControl.isServer) {
+      hudBatch.begin(ShapeType.Filled)
+      new HudBar((Const.Balance.jumpCoolDown * 100).toInt).render(hudBatch, (100 / Const.Balance.jumpCoolDown * lastJump).toInt,
+        new Vector2(0, 0), new Vector2(Const.Projection.width, 20))
+      hudBatch.end()
+    }
   }
 
   override def onExit() = {
