@@ -6,10 +6,12 @@ import com.badlogic.gdx.math.{Rectangle, Vector2}
 import com.catinthedark.shapeshift.Assets.Animations.PlayerAnimationPack
 import com.catinthedark.shapeshift.common.Const
 import com.catinthedark.shapeshift.common.Const.Balance.playerBalance
+import com.catinthedark.shapeshift.common.Const.UI
 import com.catinthedark.shapeshift.view._
 
 sealed trait Entity {
   var pos: Vector2
+  var radius: Float
   def texture(delta: Float = 0): TextureRegion
 }
 
@@ -33,6 +35,8 @@ case class Enemy(var pos: Vector2, var state: State, pack: PlayerAnimationPack, 
   def physRect: Rectangle = {
     new Rectangle(pos.x, pos.y, Const.UI.enemyUpPhysWH().x, Const.UI.enemyUpPhysWH().y)
   }
+
+  override var radius: Float = UI.playerPhysRadius
 }
 
 case class Player(var pos: Vector2, var state: State, pack: PlayerAnimationPack, balance: playerBalance, var angle: Float) extends Entity {
@@ -57,10 +61,14 @@ case class Player(var pos: Vector2, var state: State, pack: PlayerAnimationPack,
   def physRect: Rectangle = {
     new Rectangle(pos.x, pos.y, Const.UI.playerUpPhysWH().x, Const.UI.playerUpPhysWH().y)
   }
+
+  override var radius: Float = UI.playerPhysRadius
 }
 
 case class Tree(var pos: Vector2, private val texture: Texture) extends Entity {
   val region = new TextureRegion(texture)
   
   override def texture(delta: Float): TextureRegion = region
+
+  override var radius: Float = UI.treePhysRadius
 }

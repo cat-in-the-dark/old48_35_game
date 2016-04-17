@@ -6,6 +6,7 @@ import com.badlogic.gdx.{Gdx, Input, InputAdapter}
 import com.catinthedark.lib._
 import com.catinthedark.shapeshift.common.Const
 import com.catinthedark.shapeshift.common.Const.UI
+import com.catinthedark.shapeshift.entity.Tree
 import com.catinthedark.shapeshift.view._
 
 /**
@@ -123,14 +124,19 @@ abstract class Control(shared: Shared1) extends SimpleUnit with Deferred {
 
       val predictedPos = new Vector2(shared.player.pos.x + speedX, shared.player.pos.y + speedY)
 
-      shared.trees.foreach(tree => {
-        val predictDistance = predictedPos.dst(tree.pos) - UI.playerPhysRadius - UI.treePhysRadius
-        if (predictDistance <= 0) {
-          val angle = Math.atan2(tree.pos.y - predictedPos.y, tree.pos.x - predictedPos.x).toFloat
-          val newPosX = predictedPos.x + predictDistance * Math.cos(angle).toFloat
-          val newPosY = predictedPos.y + predictDistance * Math.sin(angle).toFloat
-          speedX = newPosX - shared.player.pos.x
-          speedY = newPosY - shared.player.pos.y
+      shared.entities.foreach(entity => {
+        entity match {
+          case tree: Tree => {
+            val predictDistance = predictedPos.dst(entity.pos) - UI.playerPhysRadius - entity.radius
+            if (predictDistance <= 0) {
+              val angle = Math.atan2(entity.pos.y - predictedPos.y, entity.pos.x - predictedPos.x).toFloat
+              val newPosX = predictedPos.x + predictDistance * Math.cos(angle).toFloat
+              val newPosY = predictedPos.y + predictDistance * Math.sin(angle).toFloat
+              speedX = newPosX - shared.player.pos.x
+              speedY = newPosY - shared.player.pos.y
+            }
+          }
+          case _ =>
         }
       })
 

@@ -13,7 +13,7 @@ import com.badlogic.gdx.math.Vector2
 import com.catinthedark.shapeshift.Assets
 import com.catinthedark.shapeshift.common.Const
 import com.catinthedark.shapeshift.common.Const.{Balance, UI}
-import com.catinthedark.shapeshift.entity.Tree
+import com.catinthedark.shapeshift.entity.{Enemy, Entity, Tree}
 import com.catinthedark.shapeshift.view._
 import com.catinthedark.lib._
 import com.catinthedark.shapeshift.common.Const
@@ -60,6 +60,7 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
     plantTrees(layers.get("tree1"))
     plantTrees(layers.get("tree2"))
     plantTrees(layers.get("tree3"))
+    shared.entities += shared.enemy
   }
 
   def plantTrees(layer: MapLayer) = {
@@ -68,7 +69,7 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
       val tree = mapTrees.next()
       val x = tree.getProperties.get("x", classOf[Float])
       val y = tree.getProperties.get("y", classOf[Float])
-      shared.trees += new Tree(new Vector2(x, y), layerToTexture(layer.getName))
+      shared.entities += new Tree(new Vector2(x, y), layerToTexture(layer.getName))
     }
   }
 
@@ -212,20 +213,26 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
     drawFloor()
     enemyView.run(delta)
 
-    shared.trees = shared.trees.sortWith((a, b) => {
+    shared.entities = shared.entities.sortWith((a, b) => {
       shared.player.pos.dst(a.pos) > shared.player.pos.dst(b.pos)
     })
 
-    shared.trees.foreach(tree => {
+    shared.entities.foreach(entity => {
       val pos = shared.player.pos
       val maxRadius = shared.player.balance.maxRadius
-      val distance = pos.dst(tree.pos)
+      val distance = pos.dst(entity.pos)
       if (distance < maxRadius) {
-        drawShadow(pos, tree.pos, UI.treePhysRadius)
+        drawShadow(pos, entity.pos, entity.radius)
       }
 
       magicBatch managed { batch =>
-        magicBatch.drawCircleCentered(tree.texture().getTexture, tree.pos.x, tree.pos.y, Const.UI.treePhysRadius)
+        entity match {
+          case enemy: Enemy =>
+            enemyView.render(delta, batch)
+          case tree: Tree =>
+            magicBatch.drawCircleCentered(entity.texture().getTexture, entity.pos.x, entity.pos.y, entity.radius)
+          case _ =>
+        }
       }
     })
 
@@ -246,7 +253,6 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
 
     magicBatch managed { batch =>
       magicBatch.drawWithDebug(shared.player.texture(delta), shared.player.rect, shared.player.physRect, angle = shared.player.angle)
-      enemyView.render(delta, batch)
     }
     
     renderList.foreach(_())
