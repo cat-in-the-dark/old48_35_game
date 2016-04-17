@@ -42,7 +42,7 @@ abstract class EnemyView(val shared: Shared1) extends SimpleUnit with Deferred {
     val shootPos = data._1
     val objName = data._2
 
-    val distance = shared.enemy.pos.dst(shootPos)
+    val distance = shared.player.pos.dst(shootPos)
     
     println(s"Network shot: $shootPos $objName $distance")
     shared.enemy.state = SHOOTING
