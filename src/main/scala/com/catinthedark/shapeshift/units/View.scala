@@ -198,7 +198,7 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
       }
 
       magicBatch managed { batch =>
-        magicBatch.drawCircleCentered(tree.texture, tree.pos.x, tree.pos.y, Const.UI.treePhysRadius)
+        magicBatch.drawCircleCentered(tree.texture().getTexture, tree.pos.x, tree.pos.y, Const.UI.treePhysRadius)
       }
     })
 
