@@ -1,10 +1,10 @@
 package com.catinthedark.shapeshift.units
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.{Texture, OrthographicCamera, Color, GL20}
+import com.badlogic.gdx.graphics._
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.maps.MapLayer
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer
+import com.badlogic.gdx.graphics.glutils.{ShaderProgram, FrameBuffer, ShapeRenderer}
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType
 import com.badlogic.gdx.math.Vector2
 import com.catinthedark.shapeshift.Assets
@@ -94,20 +94,6 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
       self.draw(Assets.Textures.floor, 0,0,0,0, 3200, 3200)
     }
 
-//  def drawTreeLayer(layer: MapLayer) = {
-//    val trees = layer.getObjects.iterator()
-//    val texture = layerToTexture(layer.getName)
-//    batch.managed { self =>
-//      while (trees.hasNext) {
-//        val tree = trees.next()
-//        val x = tree.getProperties.get("x", classOf[Float])
-//        val y = tree.getProperties.get("y", classOf[Float])
-//
-//        self.drawCentered(texture, x, y)
-//      }
-//    }
-//  }
-
   override def run(delta: Float) = {
     //1. clear screen
     Gdx.gl.glClearColor(UI.darknessRed, UI.darknessGreen, UI.darknessBlue, 0)
@@ -176,6 +162,9 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
       val maxRadius = shared.player.balance.maxRadius
       val distance = pos.dst(tree.x, tree.y)
       if (distance < maxRadius) {
+        Gdx.gl.glEnable(GL20.GL_BLEND)
+        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA)
+
         shapeRenderer.begin(ShapeType.Filled)
         shapeRenderer.setColor(UI.darknessColor)
 
@@ -185,14 +174,22 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
         val y1 = (pos.y + distance * Math.sin(alpha - beta)).toFloat
         val x2 = (pos.x + distance * Math.cos(alpha + beta)).toFloat
         val y2 = (pos.y + distance * Math.sin(alpha + beta)).toFloat
-        val x3 = (x2 + (UI.rayLength - distance) * Math.cos(alpha + beta)).toFloat
-        val y3 = (y2 + (UI.rayLength - distance) * Math.sin(alpha + beta)).toFloat
-        val x4 = (x1 + (UI.rayLength - distance) * Math.cos(alpha - beta)).toFloat
-        val y4 = (y1 + (UI.rayLength - distance) * Math.sin(alpha - beta)).toFloat
+        val x3 = (x2 + UI.rayLength * Math.cos(alpha + beta)).toFloat
+        val y3 = (y2 + UI.rayLength * Math.sin(alpha + beta)).toFloat
+        val x4 = (x1 + UI.rayLength * Math.cos(alpha - beta)).toFloat
+        val y4 = (y1 + UI.rayLength * Math.sin(alpha - beta)).toFloat
+        val x5 = (x1 + UI.rayLength * Math.cos(alpha - beta - UI.halfShadowAngle)).toFloat
+        val y5 = (y1 + UI.rayLength * Math.sin(alpha - beta - UI.halfShadowAngle)).toFloat
+        val x6 = (x2 + UI.rayLength * Math.cos(alpha + beta + UI.halfShadowAngle)).toFloat
+        val y6 = (y2 + UI.rayLength * Math.sin(alpha + beta + UI.halfShadowAngle)).toFloat
 
         shapeRenderer.triangle(x1, y1, x2, y2, x3, y3)
         shapeRenderer.triangle(x1, y1, x3, y3, x4, y4)
+        shapeRenderer.setColor(UI.semiDarknessColor)
+        shapeRenderer.triangle(x1, y1, x4, y4, x5, y5)
+        shapeRenderer.triangle(x2, y2, x3, y3, x6, y6)
         shapeRenderer.end()
+        Gdx.gl.glDisable(GL20.GL_BLEND)
       }
 
       magicBatch managed { batch =>

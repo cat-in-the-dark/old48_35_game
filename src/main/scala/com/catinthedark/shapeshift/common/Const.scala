@@ -61,7 +61,9 @@ object Const extends ConstDelegate {
     var darknessGreen = 0.04f
     var darknessBlue = 0.157f
 
-    val darknessColor = new Color(darknessRed, darknessGreen, darknessBlue, 0);
+    val darknessColor = new Color(darknessRed, darknessGreen, darknessBlue, 1f)
+    val semiDarknessColor = new Color(darknessRed, darknessGreen, darknessBlue, 0.5f)
+    val halfShadowAngle = 5f * Math.PI / 180
   }
 
   object HUD {
