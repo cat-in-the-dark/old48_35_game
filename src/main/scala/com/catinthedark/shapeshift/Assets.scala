@@ -43,6 +43,9 @@ object Assets {
     val tree2 = new Texture(Gdx.files.internal("textures/tree2.png"))
     val tree3 = new Texture(Gdx.files.internal("textures/tree3.png"))
 
+    val won = new Texture(Gdx.files.internal("textures/won.png"))
+    val loose = new Texture(Gdx.files.internal("textures/loose.png"))
+
     object HunterThemePack extends ThemePack {
       override val winScreen: Texture = new Texture(Gdx.files.internal("textures/logo.png"))
       override val pairing: Texture = new Texture(Gdx.files.internal("textures/pairing.png"))

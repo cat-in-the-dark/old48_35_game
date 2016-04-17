@@ -13,11 +13,14 @@ class Shared1(val shared0: Shared0,
               var jumpingAngle: Float = 0,
               var jumpTime: Float = 0,
               var jumpScale: Float = 0) {
-  def reset() = {
-    
-  }
-  
   var (player, enemy) = init()
+
+  def reset() = {
+    entities.clear()
+    val pe = init()
+    player = pe._1
+    enemy = pe._2
+  }
   
   def init() = {
     val (spawnPlayer, spawnEnemy) = Const.Balance.randomSpawn

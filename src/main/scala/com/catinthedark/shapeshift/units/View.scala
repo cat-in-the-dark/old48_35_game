@@ -46,9 +46,6 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
 
   val enemyView = new EnemyView(shared) with LocalDeferred
   val camera = new OrthographicCamera(Const.Projection.width, Const.Projection.height)
-  camera.position.x = Const.Projection.width / 2
-  camera.position.y = Const.Projection.height / 2
-  camera.update()
 
   shared.shared0.networkControl.onMovePipe.ports += enemyView.onMove
   shared.shared0.networkControl.onShootPipe.ports += enemyView.onShoot
@@ -59,6 +56,11 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
   val renderList = new mutable.ArrayBuffer[() => Unit]()
 
   override def onActivate() = {
+    camera.position.x = Const.Projection.width / 2
+    camera.position.y = Const.Projection.height / 2
+    camera.update()
+    renderList.clear()
+    
     val layers = Assets.Maps.map1.getLayers
     plantTrees(layers.get("tree1"))
     plantTrees(layers.get("tree2"))

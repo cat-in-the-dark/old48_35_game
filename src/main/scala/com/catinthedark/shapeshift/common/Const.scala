@@ -104,8 +104,10 @@ object Const extends ConstDelegate {
       (new Vector2(30, 30), new Vector2(570,3100)),
       (new Vector2(1670, 2500), new Vector2(3000,2700))
     )
-    def randomSpawn =
-      spawnPoints(new Random().nextInt(spawnPoints.length))
+    def randomSpawn = {
+      val ab = spawnPoints(new Random().nextInt(spawnPoints.length))
+      (ab._1.cpy(), ab._2.cpy())
+    }
 
     val jumpTime = 1f
     val jumpCoolDown = 5f
