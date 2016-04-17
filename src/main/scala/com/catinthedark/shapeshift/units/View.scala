@@ -177,7 +177,7 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
     val distance = lightPos.dst(targetPos)
 
     val alpha = Math.atan2(targetPos.y - lightPos.y, targetPos.x - lightPos.x)
-    val beta = Math.asin(UI.treePhysRadius / distance)
+    val beta = Math.asin(radius / distance)
     val x1 = (lightPos.x + distance * Math.cos(alpha - beta)).toFloat
     val y1 = (lightPos.y + distance * Math.sin(alpha - beta)).toFloat
     val x2 = (lightPos.x + distance * Math.cos(alpha + beta)).toFloat
