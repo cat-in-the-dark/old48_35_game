@@ -23,6 +23,8 @@ class Shared1(val shared0: Shared0,
     val pe = init()
     player = pe._1
     enemy = pe._2
+    playerTraces.clear()
+    enemyTraces.clear()
   }
 
   def init() = {
