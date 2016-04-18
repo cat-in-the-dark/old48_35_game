@@ -70,8 +70,8 @@ object Const extends ConstDelegate {
 
     val maxJumpingScale = 2.0f
 
-    val traceDistance = 64
-    val traceWH = new Vector2(64, 64)
+    val traceDistance = 115
+    val traceWH = new Vector2(115, 67)
   }
 
   object HUD {
