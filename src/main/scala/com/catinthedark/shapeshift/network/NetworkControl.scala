@@ -57,7 +57,9 @@ trait NetworkControl extends Runnable {
 
     while (!shouldStop && !Thread.currentThread().isInterrupted) {
       try {
+        val time = System.currentTimeMillis()
         ZMQ.poll(pollItems, Const.pollTimeout)
+        val pollTime = System.currentTimeMillis() - time
         if (pollItems(0).isReadable) {
           val rawData = pullSocket.recvStr()
           val data = rawData.split(":")
@@ -98,7 +100,10 @@ trait NetworkControl extends Runnable {
             detectedGameEnd = true
             shouldStop = true
           }
+        } else if (buffer.isEmpty && Const.pollTimeout - pollTime > 0) {
+          Thread.sleep(Const.pollTimeout - pollTime)
         }
+
       } catch {
         case e: InterruptedException =>
           println("Interrupted network thread")
