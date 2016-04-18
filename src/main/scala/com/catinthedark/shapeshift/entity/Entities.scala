@@ -13,11 +13,12 @@ import com.catinthedark.shapeshift.view._
 sealed trait Entity {
   var pos: Vector2
   var radius: Float
+  var angle: Float
   def texture(delta: Float = 0): TextureRegion
   def name: String
 }
 
-case class Enemy(var pos: Vector2, var state: State, pack: PlayerAnimationPack, audio: PlayerAudioPack, var angle: Float, var scale: Float) extends Entity {
+case class Enemy(var pos: Vector2, var state: State, pack: PlayerAnimationPack, audio: PlayerAudioPack, balance: playerBalance, var angle: Float, var scale: Float) extends Entity {
   var animationCounter = 0f
 
   def texture (delta: Float) = {
@@ -84,4 +85,12 @@ case class Tree(var pos: Vector2, private val texture: Texture) extends Entity {
   override var radius: Float = UI.treePhysRadius
 
   override def name: String = "Tree"
+
+  override var angle: Float = 0f
+}
+
+case class Trace(var pos: Vector2, var angle: Float) {
+  def rect: Rectangle = {
+    new Rectangle(pos.x, pos.y, UI.traceWH.x, UI.traceWH.y)
+  }
 }

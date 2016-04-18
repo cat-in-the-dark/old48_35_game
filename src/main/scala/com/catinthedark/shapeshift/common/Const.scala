@@ -69,6 +69,9 @@ object Const extends ConstDelegate {
     val halfShadowAngle = 5f * Math.PI / 180
 
     val maxJumpingScale = 2.0f
+
+    val traceDistance = 64
+    val traceWH = new Vector2(64, 64)
   }
 
   object HUD {
@@ -129,6 +132,7 @@ object Const extends ConstDelegate {
       val shotRadius: Int
       val shotDispersionAngle: Float
       val shotColdown: Float
+      val maxTraces: Int
     }
 
     object hunterBalance extends playerBalance {
@@ -137,6 +141,7 @@ object Const extends ConstDelegate {
       override val maxRadius: Int = 1000
       override val viewAngle: Float = 2f
       override val shotColdown: Float = 1.3f
+      override val maxTraces: Int = 20
     }
 
     object wolfBalance extends playerBalance {
@@ -145,6 +150,7 @@ object Const extends ConstDelegate {
       override val shotRadius: Int = 200
       override val shotDispersionAngle: Float = 30
       override val shotColdown: Float = 1.5f
+      override val maxTraces: Int = 30
     }
   }
 

@@ -6,7 +6,7 @@ import com.badlogic.gdx.{Gdx, Input, InputAdapter}
 import com.catinthedark.lib._
 import com.catinthedark.shapeshift.common.Const
 import com.catinthedark.shapeshift.common.Const.{Balance, Projection, UI}
-import com.catinthedark.shapeshift.entity.{Enemy, Entity, Tree}
+import com.catinthedark.shapeshift.entity.{Trace, Enemy, Entity, Tree}
 import com.catinthedark.shapeshift.view._
 
 /**
@@ -98,6 +98,15 @@ abstract class Control(shared: Shared1) extends SimpleUnit with Deferred {
       shared.player.audio.steps.pause()
     }
     shared.shared0.networkControl.move(shared.player.pos, shared.player.angle, idle = false)
+
+    if (shared.playerTraces.isEmpty || shared.playerTraces.last.pos.dst(shared.player.pos) > UI.traceDistance) {
+      shared.playerTraces.enqueue(new Trace(new Vector2(shared.player.pos), shared.player.angle))
+    }
+
+    if (shared.playerTraces.size > shared.player.balance.maxTraces) {
+      println("remove player trace")
+      shared.playerTraces.dequeue()
+    }
   }
 
   def onIdle(u: Unit): Unit = {

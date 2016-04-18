@@ -4,13 +4,15 @@ import com.badlogic.gdx.math.{Affine2, Vector2}
 import com.catinthedark.lib.{Deferred, MagicSpriteBatch, SimpleUnit}
 import com.catinthedark.shapeshift.Assets
 import com.catinthedark.shapeshift.common.Const
+import com.catinthedark.shapeshift.common.Const.UI
+import com.catinthedark.shapeshift.entity.Trace
 import com.catinthedark.shapeshift.view.{IDLE, KILLED, RUNNING, SHOOTING}
 import com.catinthedark.shapeshift.view.{IDLE, JUMPING, RUNNING}
 
 abstract class EnemyView(val shared: Shared1) extends SimpleUnit with Deferred {
   def onMove(data: (Vector2, Float, Boolean)): Unit = {
     if (shared.enemy.state == KILLED) return
-    
+
     shared.enemy.pos = data._1
     shared.enemy.angle = data._2
     shared.enemy.state = if (data._3) {
@@ -19,6 +21,14 @@ abstract class EnemyView(val shared: Shared1) extends SimpleUnit with Deferred {
       RUNNING
     }
     shared.enemy.scale = 1f
+
+    if (shared.enemyTraces.isEmpty || shared.enemyTraces.last.pos.dst(shared.enemy.pos) > UI.traceDistance) {
+      shared.enemyTraces.enqueue(new Trace(shared.enemy.pos, shared.enemy.angle))
+    }
+
+    if (shared.enemyTraces.size > shared.enemy.balance.maxTraces) {
+      shared.enemyTraces.dequeue()
+    }
     
     val distance = shared.enemy.pos.dst(shared.player.pos)
     if (shared.enemy.state == RUNNING) {

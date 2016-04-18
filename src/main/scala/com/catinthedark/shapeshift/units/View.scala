@@ -147,7 +147,7 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
     case _ => throw new RuntimeException(s"ooops. texture for layer $layerName not found")
   }
 
-  def drawFloor() = {
+  def beginClipShader(): Unit = {
     clipShader.begin()
     clipShader.setUniformf("pos", shared.player.pos.x, shared.player.pos.y)
     clipShader.setUniformf("cam_pos", camera.position.x, camera.position.y)
@@ -155,9 +155,31 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
     clipShader.setUniformf("max_dist", shared.player.balance.maxRadius)
     clipShader.setUniformf("phi", shared.player.balance.viewAngle)
     clipShader.setUniformf("resolution", Gdx.graphics.getWidth, Gdx.graphics.getHeight)
+  }
+
+  def drawFloor() = {
+    beginClipShader()
+
     magicBatch.managed { self =>
       self.draw(Assets.Textures.floor, 0, 0, 0, 0, 3200, 3200)
     }
+
+    clipShader.end()
+  }
+
+  def drawTraces() = {
+    beginClipShader()
+
+    magicBatch.managed { self =>
+      shared.enemyTraces.foreach(trace => {
+        self.drawWithDebug(shared.enemy.pack.trace, trace.rect, trace.rect, angle = trace.angle)
+      })
+
+      shared.playerTraces.foreach(trace => {
+        self.drawWithDebug(shared.player.pack.trace, trace.rect, trace.rect, angle = trace.angle)
+      })
+    }
+
     clipShader.end()
   }
 
@@ -240,6 +262,7 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
     shapeRenderer.setProjectionMatrix(camera.combined)
 
     drawFloor()
+    drawTraces()
 
     enemyView.run(delta)
 
@@ -255,13 +278,7 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
         drawShadow(pos, entity.pos, entity.radius)
       }
 
-      clipShader.begin()
-      clipShader.setUniformf("pos", shared.player.pos.x, shared.player.pos.y)
-      clipShader.setUniformf("cam_pos", camera.position.x, camera.position.y)
-      clipShader.setUniformf("player_rot", shared.player.angle)
-      clipShader.setUniformf("max_dist", shared.player.balance.maxRadius)
-      clipShader.setUniformf("phi", shared.player.balance.viewAngle)
-      clipShader.setUniformf("resolution", Gdx.graphics.getWidth, Gdx.graphics.getHeight)
+      beginClipShader()
 
       magicBatch managed { batch =>
         entity match {
