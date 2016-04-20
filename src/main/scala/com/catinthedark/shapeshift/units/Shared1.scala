@@ -16,7 +16,8 @@ class Shared1(val shared0: Shared0,
               var jumpTime: Float = 0,
               var jumpScale: Float = 0,
               var playerTraces: mutable.Queue[Trace] = new mutable.Queue[Trace](),
-              var enemyTraces: mutable.Queue[Trace] = new mutable.Queue[Trace]()) {
+              var enemyTraces: mutable.Queue[Trace] = new mutable.Queue[Trace](),
+              var isMain: Boolean) {
   var (player, enemy) = init()
 
   def reset() = {
@@ -30,7 +31,7 @@ class Shared1(val shared0: Shared0,
 
   def init() = {
     val (spawnPlayer, spawnEnemy) = Const.Balance.randomSpawn
-    if (shared0.networkControl.isInstanceOf[NetworkServerControl])
+    if (isMain)
       (Player(spawnPlayer, IDLE, Assets.Animations.HunterAnimationPack, Assets.Audios.HunterAudioPack, hunterBalance, 0, 1f, canJump = false), Enemy(spawnEnemy, IDLE, Assets.Animations.WolfAnimationPack, Assets.Audios.WolfAudioPack, wolfBalance, 0, 1f))
     else
       (Player(spawnEnemy, IDLE, Assets.Animations.WolfAnimationPack, Assets.Audios.WolfAudioPack, wolfBalance, 0, 1f, canJump = true), Enemy(spawnPlayer, IDLE, Assets.Animations.HunterAnimationPack, Assets.Audios.HunterAudioPack, hunterBalance, 0, 1f))

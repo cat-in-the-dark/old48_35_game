@@ -104,7 +104,6 @@ abstract class Control(shared: Shared1) extends SimpleUnit with Deferred {
     }
 
     if (shared.playerTraces.size > shared.player.balance.maxTraces) {
-      println("remove player trace")
       shared.playerTraces.dequeue()
     }
   }

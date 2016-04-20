@@ -1,8 +1,9 @@
 package com.catinthedark.shapeshift
 
-import com.catinthedark.lib.{LocalDeferred, YieldUnit}
+import com.catinthedark.lib.{LocalDeferred, SimpleUnit, YieldUnit}
 import com.catinthedark.shapeshift.common.Const
 import com.catinthedark.shapeshift.entity.{Entity, Tree}
+import com.catinthedark.shapeshift.network.NetworkServerControl
 import com.catinthedark.shapeshift.units._
 import com.catinthedark.shapeshift.view.KILLED
 
@@ -12,19 +13,22 @@ import scala.collection.mutable
   * Created by over on 18.04.15.
   */
 class GameState(shared0: Shared0) extends YieldUnit[Boolean] {
-  val shared1 = new Shared1(shared0, new mutable.ListBuffer[Entity]())
-  val view = new View(shared1) with LocalDeferred
-  val control = new Control(shared1) with LocalDeferred
+  var shared1: Shared1 = null
+  var view: View = null
+  var control: Control = null
+  var children: Seq[SimpleUnit] = Seq()
 
   var forceReload = false
 
-  control.onShoot.ports += view.onShot
-  control.onJump.ports += view.onJump
-  
-  control.onGameReload + (_ => {
-    forceReload = true
-    stopNetworkThread()
-  })
+  def activateControl() {
+    control.onShoot.ports += view.onShot
+    control.onJump.ports += view.onJump
+
+    control.onGameReload + (_ => {
+      forceReload = true
+      stopNetworkThread()
+    })
+  }
 
   def onGameOver(u: Unit) = {
     stopNetworkThread()
@@ -36,12 +40,14 @@ class GameState(shared0: Shared0) extends YieldUnit[Boolean] {
       shared0.networkControlThread.interrupt()
     }
   }
-  
-  val children = Seq(view, control)
 
-
-  override def onActivate(): Unit = {
+  override def onActivate(data: Any): Unit = {
     Assets.Audios.bgm.play()
+    shared1 = data.asInstanceOf[Shared1]
+    view = new View(shared1) with LocalDeferred
+    control = new Control(shared1) with LocalDeferred
+    children = Seq(view, control)
+    activateControl()
     children.foreach(_.onActivate())
   }
 
@@ -52,13 +58,18 @@ class GameState(shared0: Shared0) extends YieldUnit[Boolean] {
     children.foreach(_.onExit())
     shared1.reset()
     shared0.networkControlThread.interrupt()
+    
+    shared1 = null
+    children = null
+    view = null
+    control = null
   }
 
-  override def run(delta: Float): Option[Boolean] = {
+  override def run(delta: Float): (Option[Boolean], Any) = {
     shared0.networkControl.processIn()
     children.foreach(_.run(delta))
     
-    if (forceReload) {
+    val res = if (forceReload) {
       forceReload = false
       Some(false)
     } else if (shared1.player.state == KILLED) {
@@ -68,5 +79,7 @@ class GameState(shared0: Shared0) extends YieldUnit[Boolean] {
     } else {
       None
     }
+    
+    (res, null)
   }
 }

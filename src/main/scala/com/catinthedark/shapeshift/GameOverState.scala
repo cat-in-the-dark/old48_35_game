@@ -11,11 +11,11 @@ class GameOverState(val shared: Shared0)  extends Stub("GameOver")  with KeyAwai
 
   val batch = new SpriteBatch
 
-  override def onActivate(): Unit = {
+  override def onActivate(data: Any): Unit = {
     super.onActivate()
   }
 
-  override def run(delta: Float): Option[Unit] = {
+  override def run(delta: Float): (Option[Unit], Any) = {
     batch.managed { self: SpriteBatch =>
       self.draw(Assets.Textures.loose, 0, 0)
     }

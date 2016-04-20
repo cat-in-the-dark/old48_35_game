@@ -12,7 +12,7 @@ trait TextureState extends Stub {
   val batch = new SpriteBatch
   val texture: Texture
 
-  override def run(delta: Float): Option[Unit] = {
+  override def run(delta: Float): (Option[Unit], Any) = {
     Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT)
     batch.managed { self: SpriteBatch =>
       self.draw(texture, 0, 0)

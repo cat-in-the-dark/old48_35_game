@@ -3,12 +3,17 @@ package com.catinthedark.shapeshift
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.{Gdx, Input, InputAdapter}
 import com.catinthedark.lib.{Stub, TextureState}
+import com.catinthedark.shapeshift.entity.Entity
+import com.catinthedark.shapeshift.network.NetworkServerControl
+import com.catinthedark.shapeshift.units.Shared1
+
+import scala.collection.mutable
 
 class PairingState(shared0: Shared0, name: String) extends Stub(name) with TextureState {
   var hardSkip: Boolean = false
   
-  override def onActivate(): Unit = {
-    super.onActivate()
+  override def onActivate(data: Any): Unit = {
+    super.onActivate(data)
     
     Gdx.input.setInputProcessor(new InputAdapter {
       override def keyDown(keyCode: Int): Boolean = {
@@ -29,18 +34,20 @@ class PairingState(shared0: Shared0, name: String) extends Stub(name) with Textu
     super.onExit()
   }
 
-  override def run(delta: Float): Option[Unit] = {
+  override def run(delta: Float): (Option[Unit], Any) = {
     super.run(delta)
     if (hardSkip) {
       hardSkip = false
       println("WARNING hard skip of network connection")
-      return Some()
+      val shared1 = new Shared1(shared0, new mutable.ListBuffer[Entity](), isMain = true)
+      return (Some(), shared1)
     }
     
     if (shared0.networkControl != null) {
-      shared0.networkControl.isConnected
+      val shared1 = new Shared1(shared0, new mutable.ListBuffer[Entity](), isMain = shared0.networkControl.isInstanceOf[NetworkServerControl])
+      (shared0.networkControl.isConnected, shared1)
     } else {
-      None
+      (None, null)
     }
   }
 

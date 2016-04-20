@@ -12,7 +12,7 @@ trait DelayState extends Stub {
 
   override def run(delta: Float) = {
     stateTime += delta
-    if (stateTime > delay) Some(Unit)
+    if (stateTime > delay) (Some(Unit), null)
     else super.run(delta)
   }
 

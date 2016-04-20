@@ -9,7 +9,7 @@ trait KeyAwaitState extends Stub {
   val keycode: Int
   var done = false
 
-  override def onActivate(): Unit = {
+  override def onActivate(data: Any): Unit = {
     Gdx.input.setInputProcessor(new InputAdapter {
       override def keyDown(kc: Int) = {
         if (keycode == kc) {
@@ -20,8 +20,8 @@ trait KeyAwaitState extends Stub {
     })
   }
 
-  override def run(delay: Float): Option[Unit] =
-    if (done) Some()
+  override def run(delay: Float): (Option[Unit], Any) =
+    if (done) (Some(), None)
     else super.run(delay)
 
   override def onExit(): Unit = {

@@ -11,7 +11,7 @@ class RouteMachine {
   private val routes = mutable.ListBuffer[(YieldUnit[Any], Any => YieldUnit[Any])]()
   private var current: YieldUnit[Any] = _
 
-  def doRoute[T](cond: T): Unit = {
+  def doRoute[T](cond: T, data: Any): Unit = {
     val from = current
     println(s"begin transition from $from")
     from.onExit()
@@ -23,13 +23,13 @@ class RouteMachine {
       .headOption
       .getOrElse(throw new RuntimeException(s"Could not find route function from $from"))
     val to = routeFn(cond)
-    to.onActivate()
+    to.onActivate(data)
     println(s"end transition to $to")
     current = to
   }
 
   def addRoute[T >: Any](from: YieldUnit[T], routeFn: T => YieldUnit[Any]): Unit = {
-    routes += ((from, routeFn));
+    routes += ((from, routeFn))
   }
 
   def start(unit: YieldUnit[Any]) = {
@@ -38,8 +38,9 @@ class RouteMachine {
   }
 
   def run(delta: Float): Unit = {
-    current.run(delta) match {
-      case Some(res) => doRoute(res)
+    val data = current.run(delta)
+    data._1 match {
+      case Some(res) => doRoute(res, data._2)
       case _ =>
     }
   }
