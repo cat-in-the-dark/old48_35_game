@@ -47,8 +47,6 @@ trait NetworkControl extends Runnable {
     while(!bufferIn.isEmpty)
       bufferIn.poll()()
   }
-
-  def isServer: Boolean
   
   def work(pushSocket: Socket, pullSocket: Socket): Unit = {
     val pollItems = Array(new PollItem(pullSocket, Poller.POLLIN), new PollItem(pushSocket, Poller.POLLOUT))

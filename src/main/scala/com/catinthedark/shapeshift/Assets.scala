@@ -22,6 +22,7 @@ object Assets {
   }
   object Textures {
     val logo = new Texture(Gdx.files.internal("textures/logo.png"))
+    val pairing = new Texture(Gdx.files.internal("textures/pairing.png"))
 
     val t0 = new Texture(Gdx.files.internal("textures/title.png"))
 //    val t1 = new Texture(Gdx.files.internal("textures/tut1eng.png"))
@@ -31,7 +32,6 @@ object Assets {
 //    val t4 = new Texture(Gdx.files.internal("textures/tut5eng.png"))
     trait ThemePack {
       val winScreen: Texture
-      val pairing: Texture
       val loseScreen: Texture
       val body: Texture
       val trace: Texture
@@ -49,7 +49,6 @@ object Assets {
 
     object HunterThemePack extends ThemePack {
       override val winScreen: Texture = new Texture(Gdx.files.internal("textures/logo.png"))
-      override val pairing: Texture = new Texture(Gdx.files.internal("textures/pairing.png"))
       override val loseScreen: Texture = new Texture(Gdx.files.internal("textures/logo.png"))
       override val body: Texture = new Texture(Gdx.files.internal("textures/hunter_pack/body.png"))
       override val trace: Texture = new Texture(Gdx.files.internal("textures/hunter_pack/trace.png"))
@@ -58,7 +57,6 @@ object Assets {
 
     object WolfThemePack extends ThemePack {
       override val winScreen: Texture = new Texture(Gdx.files.internal("textures/logo.png"))
-      override val pairing: Texture = new Texture(Gdx.files.internal("textures/pairing.png"))
       override val loseScreen: Texture = new Texture(Gdx.files.internal("textures/logo.png"))
       override val body: Texture = new Texture(Gdx.files.internal("textures/woolf_pack/body.png"))
       override val trace: Texture = new Texture(Gdx.files.internal("textures/woolf_pack/trace.png"))

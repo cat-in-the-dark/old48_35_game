@@ -17,6 +17,4 @@ class NetworkServerControl extends NetworkControl {
     println("Start server")
     work(pushSocket, pullSocket)
   }
-
-  override def isServer: Boolean = true
 }

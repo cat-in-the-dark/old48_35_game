@@ -1,7 +1,5 @@
 package com.catinthedark.shapeshift.units
 
-import java.util.concurrent.ConcurrentLinkedQueue
-
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics._
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
@@ -17,8 +15,6 @@ import com.catinthedark.shapeshift.entity.{Enemy, Entity, Tree}
 import com.catinthedark.shapeshift.view._
 import com.catinthedark.lib._
 import com.catinthedark.shapeshift.common.Const
-import Magic.richifySpriteBatch
-import org.lwjgl.util.Point
 
 import scala.collection.mutable
 
@@ -316,7 +312,7 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
 
     lastJump += delta * 7
 
-    if(!shared.shared0.networkControl.isServer) {
+    if(shared.player.canJump) {
       hudBatch.begin(ShapeType.Filled)
       new HudBar((Const.Balance.jumpCoolDown * 100).toInt).render(hudBatch, (100 / Const.Balance.jumpCoolDown * lastJump).toInt,
         new Vector2(0, 0), new Vector2(Const.Projection.width, 20))

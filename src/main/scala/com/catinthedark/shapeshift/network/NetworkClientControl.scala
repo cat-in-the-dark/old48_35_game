@@ -18,6 +18,4 @@ class NetworkClientControl(serverAddress: String) extends NetworkControl {
     println(s"Start connecting to $serverAddress")
     work(pushSocket, pullSocket)
   }
-
-  override def isServer: Boolean = false
 }
