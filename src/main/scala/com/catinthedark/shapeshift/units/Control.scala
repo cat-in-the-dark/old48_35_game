@@ -101,10 +101,13 @@ abstract class Control(shared: Shared1) extends SimpleUnit with Deferred {
 
     if (shared.playerTraces.isEmpty || shared.playerTraces.last.pos.dst(shared.player.pos) > UI.traceDistance) {
       shared.playerTraces.enqueue(new Trace(new Vector2(shared.player.pos), shared.player.angle))
-    }
-
-    if (shared.playerTraces.size > shared.player.balance.maxTraces) {
-      shared.playerTraces.dequeue()
+      defer(shared.player.balance.tracesLiveTime, () => {
+        synchronized({
+          if (shared.playerTraces.nonEmpty) {
+            shared.playerTraces.dequeue()
+          }
+        })
+      })
     }
   }
 

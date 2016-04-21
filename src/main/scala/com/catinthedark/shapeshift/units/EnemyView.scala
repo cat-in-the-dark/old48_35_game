@@ -24,10 +24,13 @@ abstract class EnemyView(val shared: Shared1) extends SimpleUnit with Deferred {
 
     if (shared.enemyTraces.isEmpty || shared.enemyTraces.last.pos.dst(shared.enemy.pos) > UI.traceDistance) {
       shared.enemyTraces.enqueue(new Trace(shared.enemy.pos, shared.enemy.angle))
-    }
-
-    if (shared.enemyTraces.size > shared.enemy.balance.maxTraces) {
-      shared.enemyTraces.dequeue()
+      defer(shared.enemy.balance.tracesLiveTime, () => {
+        synchronized({
+          if (shared.enemyTraces.nonEmpty) {
+            shared.enemyTraces.dequeue()
+          }
+        })
+      })
     }
     
     val distance = shared.enemy.pos.dst(shared.player.pos)
