@@ -41,18 +41,19 @@ class MyApplication extends Application {
 object DesktopLauncher {
   def main(args: Array[String]) {
     val conf = new LwjglApplicationConfiguration
-    conf.title = "Wild West Farm Shooting"
+    conf.title = "Za bochok"
     conf.height = Const.Projection.height.toInt
     conf.width = Const.Projection.width.toInt
     conf.x = 300
     conf.y = 0
 
     val address = if (args.length > 0) {
-      println(s"Would be connected to ${args(0)} if can")
       args(0)
     } else {
       "https://catinthedark-game-server.herokuapp.com/"
     }
+
+    println(s"Would be connected to $address if can")
     
 
 //    new Thread(new Runnable {
