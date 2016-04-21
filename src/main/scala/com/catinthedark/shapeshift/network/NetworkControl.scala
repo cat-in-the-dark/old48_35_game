@@ -42,5 +42,5 @@ trait NetworkControl extends Runnable {
   protected def onMove(msg: (Vector2, Float, Boolean)) = bufferIn.add(() => onMovePipe(msg))
   protected def onShoot(objName: String, shotFrom: Vector2) = bufferIn.add(() => onShootPipe(shotFrom, objName))
   protected def onJump(msg: (Vector2, Float, Float)) = bufferIn.add(() => onJumpPipe(msg))
-  protected def onGameStarted(msg: (String, String)) = println(s"Received hello package $msg")
+  protected def onGameStarted(msg: (String, String)) = println(s"Received GameStart package $msg")
 }

@@ -15,9 +15,7 @@ public abstract class NetworkTransport implements IMessageBus.Transport {
     @Override
     public void send(Object message) {
         try {
-            System.out.println("Convert " + message);
             String json = converter.toJson(message);
-            System.out.println("JSON " + json);
             sendToNetwork(json);
         } catch (Exception e) {
             e.printStackTrace(System.err);
