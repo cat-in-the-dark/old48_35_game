@@ -20,7 +20,7 @@ class JacksonConverterScala(private val objectMapper: ObjectMapper) extends Netw
 
   registerConverter[DisconnectedMessage](classOf[DisconnectedMessage], data => {
     val message = new DisconnectedMessage()
-    message.setClientID(data.get("clientID").asInstanceOf[String])
+    message.setClientID(data("clientID").asInstanceOf[String])
     message
   })
   
@@ -43,6 +43,8 @@ class JacksonConverterScala(private val objectMapper: ObjectMapper) extends Netw
       wrapper.copy(data = data)
     } catch {
       case e: IOException =>
+        throw new NetworkTransport.ConverterException(s"Can't parse $json : ${e.getMessage}", e)
+      case e: ClassCastException =>
         throw new NetworkTransport.ConverterException(s"Can't parse $json : ${e.getMessage}", e)
     }
   }

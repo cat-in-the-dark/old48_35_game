@@ -51,8 +51,7 @@ object DesktopLauncher {
       println(s"Would be connected to ${args(0)} if can")
       args(0)
     } else {
-      println("Start as server")
-      null
+      "https://catinthedark-game-server.herokuapp.com/"
     }
     
 
