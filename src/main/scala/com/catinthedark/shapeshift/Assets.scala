@@ -118,9 +118,9 @@ object Assets {
   object Audios {
     val bgm = Gdx.audio.newMusic(Gdx.files.internal("sound/bgm.mp3"))
     bgm.setLooping(true)
-    bgm.setVolume(0.75f)
+    bgm.setVolume(0.55f)
     
-    val stepsVolume = 0.5f
+    val stepsVolume = 0.50f
     
     trait PlayerAudioPack {
       val shoot: Sound

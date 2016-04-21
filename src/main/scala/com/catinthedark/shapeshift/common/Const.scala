@@ -107,8 +107,8 @@ object Const extends ConstDelegate {
     object wolfBalance extends playerBalance {
       override val maxRadius: Int = 2000
       override val viewAngle: Float = 2000f
-      override val shotRadius: Int = 100
-      override val shotDispersionAngle: Float = 30
+      override val shotRadius: Int = 130
+      override val shotDispersionAngle: Float = 60
       override val shotColdown: Float = 1.5f
       override val tracesLiveTime: Float = 6f
     }
