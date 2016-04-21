@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.{Gdx, Input, InputAdapter}
 import com.catinthedark.lib.{Stub, TextureState}
 import com.catinthedark.shapeshift.entity.Entity
-import com.catinthedark.shapeshift.network.NetworkServerControl
 import com.catinthedark.shapeshift.units.Shared1
 
 import scala.collection.mutable
@@ -44,7 +43,7 @@ class PairingState(shared0: Shared0, name: String) extends Stub(name) with Textu
     }
     
     if (shared0.networkControl != null) {
-      val shared1 = new Shared1(shared0, new mutable.ListBuffer[Entity](), isMain = shared0.networkControl.isInstanceOf[NetworkServerControl])
+      val shared1 = new Shared1(shared0, new mutable.ListBuffer[Entity](), isMain = true)
       (shared0.networkControl.isConnected, shared1)
     } else {
       (None, null)

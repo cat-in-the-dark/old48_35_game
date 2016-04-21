@@ -1,6 +1,6 @@
 package com.catinthedark.lib.network.messages;
 
-public class GameStartedMessage {
+public class GameStartedMessage extends Message {
     private String role;
     private String clientID;
 

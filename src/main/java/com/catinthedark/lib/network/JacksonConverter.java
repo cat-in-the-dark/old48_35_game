@@ -1,10 +1,14 @@
 package com.catinthedark.lib.network;
 
+import com.catinthedark.lib.network.messages.DisconnectedMessage;
+import com.catinthedark.lib.network.messages.GameStartedMessage;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class JacksonConverter implements NetworkTransport.Converter {
     private final ObjectMapper objectMapper;
@@ -13,6 +17,19 @@ public class JacksonConverter implements NetworkTransport.Converter {
     public JacksonConverter(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
         this.converters = new HashMap<>();
+        
+        registerConverter(GameStartedMessage.class, data -> {
+            GameStartedMessage message = new GameStartedMessage();
+            message.setRole((String)data.get("role"));
+            message.setClientID((String) data.get("clientID"));
+            return message;
+        });
+
+        registerConverter(DisconnectedMessage.class, data -> {
+            DisconnectedMessage message = new DisconnectedMessage();
+            message.setClientID((String) data.get("clientID"));
+            return message;
+        });
     }
     
     @Override
@@ -29,7 +46,6 @@ public class JacksonConverter implements NetworkTransport.Converter {
     
     @Override
     public Wrapper fromJson(String json) throws NetworkTransport.ConverterException {
-        System.out.println(json);
         Wrapper wrapper;
         try {
             wrapper = objectMapper.readValue(json, Wrapper.class);
@@ -46,8 +62,18 @@ public class JacksonConverter implements NetworkTransport.Converter {
         }
     }
     
-    public void registerConverter(String className, CustomConverter converter) {
+    public <T> JacksonConverter registerConverter(Class<T> className, CustomConverter<T> converter) {
+        converters.put(className.getCanonicalName(), converter);
+        return this;
+    }
+
+    public <T> JacksonConverter registerConverter(String className, CustomConverter<T> converter) {
         converters.put(className, converter);
+        return this;
+    }
+    
+    public Collection<String> registeredConverters() {
+        return converters.keySet();
     }
     
     public static class Wrapper implements IMessageBus.Wrapper {

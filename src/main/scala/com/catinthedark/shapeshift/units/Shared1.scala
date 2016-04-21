@@ -4,7 +4,6 @@ import com.catinthedark.shapeshift.common.Const.Balance.{hunterBalance, wolfBala
 import com.catinthedark.shapeshift.{Assets, Shared0}
 import com.catinthedark.shapeshift.common.Const
 import com.catinthedark.shapeshift.entity._
-import com.catinthedark.shapeshift.network.NetworkServerControl
 import com.catinthedark.shapeshift.view.IDLE
 
 import scala.collection.mutable

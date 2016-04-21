@@ -1,15 +1,13 @@
 package com.catinthedark.lib.network.messages;
 
-import java.util.UUID;
+public class DisconnectedMessage extends Message {
+    private String clientID;
 
-public class DisconnectedMessage {
-    private UUID clientID;
-
-    public UUID getClientID() {
+    public String getClientID() {
         return clientID;
     }
 
-    public void setClientID(UUID clientID) {
+    public void setClientID(String clientID) {
         this.clientID = clientID;
     }
 }

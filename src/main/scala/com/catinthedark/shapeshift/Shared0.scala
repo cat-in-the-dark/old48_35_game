@@ -1,14 +1,12 @@
 package com.catinthedark.shapeshift
 
-import com.catinthedark.shapeshift.network.{NetworkClientControl, NetworkServerControl}
+import java.net.URI
+
+import com.catinthedark.shapeshift.network.{NetworkControl, NetworkWSControl}
 
 class Shared0(
-  val serverAddress: String
+  val serverAddress: URI
 ) {
-  val networkControl = if (serverAddress != null) {
-    new NetworkClientControl(serverAddress)
-  } else {
-    new NetworkServerControl()
-  }
+  val networkControl: NetworkControl = new NetworkWSControl(serverAddress)
   var networkControlThread: Thread = null
 }

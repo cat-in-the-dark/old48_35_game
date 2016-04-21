@@ -1,5 +1,7 @@
 package com.catinthedark.shapeshift
 
+import java.net.URI
+
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.{Game, Gdx, Input}
 import com.catinthedark.lib._
@@ -35,7 +37,7 @@ class Main(address: String) extends Game {
 //    val t5 = keyAwait("Tutorial4", Assets.Textures.t5)
 //    val t6 = keyAwait("Tutorial4", Assets.Textures.t6)
 
-    shared = new Shared0(address)
+    shared = new Shared0(new URI(address))
 
     val pairing = new PairingState(shared, "Pairing")
     

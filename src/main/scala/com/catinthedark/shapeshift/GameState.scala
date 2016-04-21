@@ -3,7 +3,6 @@ package com.catinthedark.shapeshift
 import com.catinthedark.lib.{LocalDeferred, SimpleUnit, YieldUnit}
 import com.catinthedark.shapeshift.common.Const
 import com.catinthedark.shapeshift.entity.{Entity, Tree}
-import com.catinthedark.shapeshift.network.NetworkServerControl
 import com.catinthedark.shapeshift.units._
 import com.catinthedark.shapeshift.view.KILLED
 
