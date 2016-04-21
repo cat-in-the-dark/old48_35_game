@@ -69,6 +69,10 @@ abstract class EnemyView(val shared: Shared1) extends SimpleUnit with Deferred {
         shared.enemy.audio.ricochet.play(Const.Balance.distanceToVolume(distance))
     }
   }
+  
+  def onDisconnect(u: Unit): Unit = {
+    shared.enemy.state = KILLED
+  }
 
   def render(delta: Float, magicBatch: MagicSpriteBatch) = {
     magicBatch.drawWithDebug(shared.enemy.texture(delta), shared.enemy.rect, shared.enemy.physRect, angle = shared.enemy.angle, scaleX = shared.enemy.scale, scaleY = shared.enemy.scale)

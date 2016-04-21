@@ -43,8 +43,12 @@ class PairingState(shared0: Shared0, name: String) extends Stub(name) with Textu
     }
     
     if (shared0.networkControl != null) {
-      val shared1 = new Shared1(shared0, new mutable.ListBuffer[Entity](), isMain = true)
-      (shared0.networkControl.isConnected, shared1)
+      if (shared0.networkControl.isConnected.isDefined) {
+        val shared1 = new Shared1(shared0, new mutable.ListBuffer[Entity](), isMain = shared0.networkControl.isMain)
+        (shared0.networkControl.isConnected, shared1)
+      } else {
+        (shared0.networkControl.isConnected, null)
+      }
     } else {
       (None, null)
     }

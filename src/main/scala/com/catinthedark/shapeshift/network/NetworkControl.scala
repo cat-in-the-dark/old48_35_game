@@ -13,10 +13,12 @@ case class ShootMessage(x: Float, y: Float, shotObject: String) extends Message
 
 trait NetworkControl extends Runnable {
   var isConnected: Option[Unit] = None
+  var isMain: Boolean = false
 
   val onMovePipe = new Pipe[(Vector2, Float, Boolean)]()
   val onShootPipe = new Pipe[(Vector2, String)]()
   val onJumpPipe = new Pipe[(Vector2, Float, Float)]()
+  val onEnemyDisconnected = new Pipe[Unit]()
 
   def move(pos: Vector2, angle: Float, idle: Boolean): Unit = {
     processOut(new MoveMessage(x=pos.x, y=pos.y, angle = angle, idle = idle))

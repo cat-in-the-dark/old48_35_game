@@ -51,6 +51,7 @@ class GameState(shared0: Shared0) extends YieldUnit[Boolean] {
   }
 
   override def onExit(): Unit = {
+    println("onExit GameState")
     Assets.Audios.bgm.stop()
     shared1.player.audio.steps.stop()
     shared1.enemy.audio.steps.stop()

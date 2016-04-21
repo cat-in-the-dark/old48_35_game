@@ -4,7 +4,7 @@ import java.net.URI
 
 import com.badlogic.gdx.math.Vector2
 import com.catinthedark.lib.network.IMessageBus.Callback
-import com.catinthedark.lib.network.messages.GameStartedMessage
+import com.catinthedark.lib.network.messages.{DisconnectedMessage, GameStartedMessage}
 import com.catinthedark.lib.network.{JacksonConverterScala, MessageBus, SocketIOTransport}
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
@@ -59,7 +59,15 @@ class NetworkWSControl(val serverAddress: URI) extends NetworkControl {
   messageBus.subscribe(classOf[GameStartedMessage], new Callback[GameStartedMessage] {
     override def apply(message: GameStartedMessage, sender: String): Unit = {
       isConnected = Some()
+      isMain = message.getRole == "admin"
       onGameStarted(message.getClientID, message.getRole)
+    }
+  })
+  
+  messageBus.subscribe(classOf[DisconnectedMessage], new Callback[DisconnectedMessage] {
+    override def apply(message: DisconnectedMessage, sender: String): Unit = {
+      println(s"onEnemyDisconnected $message")
+      onEnemyDisconnected()
     }
   })
   
