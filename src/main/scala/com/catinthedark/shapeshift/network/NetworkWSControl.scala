@@ -74,6 +74,11 @@ class NetworkWSControl(val serverAddress: URI) extends NetworkControl {
   override def run(): Unit = {
     transport.connect()
   }
+  
+  override def dispose(): Unit = {
+    super.dispose()
+    transport.disconnect()
+  }
 
   override def processOut(message: Any): Unit = {
     messageBus.send(message)

@@ -1,7 +1,5 @@
 package com.catinthedark.lib.network;
 
-import org.lwjgl.Sys;
-
 public abstract class NetworkTransport implements IMessageBus.Transport {
     private final Converter converter;
     private Receiver receiver;

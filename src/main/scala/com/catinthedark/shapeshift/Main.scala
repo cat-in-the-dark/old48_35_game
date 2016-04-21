@@ -78,7 +78,6 @@ class Main(address: String) extends Game {
 
   override def dispose(): Unit ={
     super.dispose()
-    if(shared.networkControlThread != null)
-      shared.networkControlThread.interrupt()
+    shared.stopNetwork()
   }
 }

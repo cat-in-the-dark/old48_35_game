@@ -38,6 +38,10 @@ trait NetworkControl extends Runnable {
   }
   
   def processOut(message: Any)
+  
+  def dispose(): Unit = {
+    isConnected = None
+  }
 
   protected val bufferIn = new ConcurrentLinkedQueue[() => Unit]()
   

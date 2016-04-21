@@ -1,12 +1,8 @@
 package com.catinthedark.shapeshift
 
 import com.catinthedark.lib.{LocalDeferred, SimpleUnit, YieldUnit}
-import com.catinthedark.shapeshift.common.Const
-import com.catinthedark.shapeshift.entity.{Entity, Tree}
 import com.catinthedark.shapeshift.units._
 import com.catinthedark.shapeshift.view.KILLED
-
-import scala.collection.mutable
 
 /**
   * Created by over on 18.04.15.
@@ -35,9 +31,7 @@ class GameState(shared0: Shared0) extends YieldUnit[Boolean] {
 
   def stopNetworkThread(): Unit = {
     println("Trying to stop network thread")
-    if (shared0.networkControlThread != null) {
-      shared0.networkControlThread.interrupt()
-    }
+    shared0.stopNetwork()
   }
 
   override def onActivate(data: Any): Unit = {
@@ -57,7 +51,7 @@ class GameState(shared0: Shared0) extends YieldUnit[Boolean] {
     shared1.enemy.audio.steps.stop()
     children.foreach(_.onExit())
     shared1.reset()
-    shared0.networkControlThread.interrupt()
+    shared0.stopNetwork()
     
     shared1 = null
     children = null

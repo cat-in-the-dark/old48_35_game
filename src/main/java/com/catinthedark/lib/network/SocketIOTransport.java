@@ -14,7 +14,7 @@ public final class SocketIOTransport extends NetworkTransport {
     private final Emitter.Listener onMessage;
     private final Emitter.Listener onConnectError;
 
-    public SocketIOTransport(final Converter converter, final URI uri) {
+    public SocketIOTransport(final NetworkTransport.Converter converter, final URI uri) {
         super(converter);
 
         final IO.Options options = new IO.Options();
