@@ -4,9 +4,10 @@ package com.catinthedark.shapeshift.units
 import com.badlogic.gdx.math.{Intersector, MathUtils, Vector2}
 import com.badlogic.gdx.{Gdx, Input, InputAdapter}
 import com.catinthedark.lib._
+import com.catinthedark.shapeshift.Assets
 import com.catinthedark.shapeshift.common.Const
 import com.catinthedark.shapeshift.common.Const.{Balance, Projection, UI}
-import com.catinthedark.shapeshift.entity.{Trace, Enemy, Entity, Tree}
+import com.catinthedark.shapeshift.entity.{Enemy, Entity, Trace, Tree}
 import com.catinthedark.shapeshift.view._
 
 /**
@@ -93,6 +94,7 @@ abstract class Control(shared: Shared1) extends SimpleUnit with Deferred {
 
   def onMove(): Unit = {
     if (shared.player.state == RUNNING) {
+      shared.player.audio.steps.setVolume(Assets.Audios.stepsVolume)
       shared.player.audio.steps.play()
     } else {
       shared.player.audio.steps.pause()
