@@ -19,10 +19,25 @@ class GameState(shared0: Shared0) extends YieldUnit[Boolean] {
     control.onShoot.ports += view.onShot
     control.onJump.ports += view.onJump
 
+    shared0.networkControl.onMovePipe.ports += view.enemyView.onMove
+    shared0.networkControl.onShootPipe.ports += view.enemyView.onShoot
+    shared0.networkControl.onJumpPipe.ports += view.enemyView.onJump
+    shared0.networkControl.onEnemyDisconnected.ports += view.enemyView.onDisconnect
+
     control.onGameReload + (_ => {
       forceReload = true
       stopNetworkThread()
     })
+  }
+
+  def deactivateControl(): Unit = {
+    control.onShoot.ports.clear()
+    control.onJump.ports.clear()
+
+    shared0.networkControl.onMovePipe.ports.clear()
+    shared0.networkControl.onShootPipe.ports.clear()
+    shared0.networkControl.onJumpPipe.ports.clear()
+    shared0.networkControl.onEnemyDisconnected.ports.clear()
   }
 
   def onGameOver(u: Unit) = {
@@ -50,6 +65,7 @@ class GameState(shared0: Shared0) extends YieldUnit[Boolean] {
     shared1.player.audio.steps.pause()
     shared1.enemy.audio.steps.pause()
     children.foreach(_.onExit())
+    deactivateControl()
     shared1.reset()
     shared0.stopNetwork()
     
