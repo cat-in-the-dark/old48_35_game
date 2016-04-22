@@ -1,7 +1,6 @@
 package com.catinthedark.shapeshift.common
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.math.{Rectangle, Vector2}
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Vector2
 import com.catinthedark.lib.constants.ConstDelegate
@@ -40,8 +39,6 @@ object Const extends ConstDelegate {
     val semiDarknessColor = new Color(darknessRed, darknessGreen, darknessBlue, 0.5f)
     val halfShadowAngle = 5f * Math.PI / 180
 
-    val maxJumpingScale = 2.0f
-
     val traceDistance = 115
     val traceWH = new Vector2(115, 67)
   }
@@ -75,7 +72,6 @@ object Const extends ConstDelegate {
     val jumpTime = 1f
     val jumpCoolDown = 5f
 
-    val distanceHear = 1000f
     def distanceToVolume(distance: Float): Float = {
       // На каждые 200 пикселей громкость падает в 2 раза
       val v = Math.pow(1.5, distance / -200).toFloat

@@ -16,8 +16,6 @@ libraryDependencies ++= Seq(
   "com.badlogicgames.gdx" % "gdx-platform" % libgdxVersion classifier "natives-desktop",
   "com.badlogicgames.gdx" % "gdx-freetype" % libgdxVersion,
   "com.badlogicgames.gdx" % "gdx-freetype-platform" % libgdxVersion classifier "natives-desktop",
-  "org.zeromq" % "jeromq" % "0.3.5",
   "io.socket" % "socket.io-client" % "0.7.0",
-  //"com.fasterxml.jackson.core" % "jackson-databind" % "2.7.2"
   "com.fasterxml.jackson.module" % "jackson-module-scala_2.11" % "2.7.2"
 )
