@@ -1,6 +1,6 @@
 package com.catinthedark.shapeshift
 
-import com.catinthedark.lib.{LocalDeferred, SimpleUnit, YieldUnit}
+import com.catinthedark.lib.{Deferred, LocalDeferred, SimpleUnit, YieldUnit}
 import com.catinthedark.shapeshift.units._
 import com.catinthedark.shapeshift.view.KILLED
 
@@ -40,10 +40,6 @@ class GameState(shared0: Shared0) extends YieldUnit[Boolean] {
     shared0.networkControl.onEnemyDisconnected.ports.clear()
   }
 
-  def onGameOver(u: Unit) = {
-    stopNetworkThread()
-  }
-
   def stopNetworkThread(): Unit = {
     println("Trying to stop network thread")
     shared0.stopNetwork()
@@ -67,7 +63,7 @@ class GameState(shared0: Shared0) extends YieldUnit[Boolean] {
     children.foreach(_.onExit())
     deactivateControl()
     shared1.reset()
-    shared0.stopNetwork()
+    //shared0.stopNetwork()
     
     shared1 = null
     children = null

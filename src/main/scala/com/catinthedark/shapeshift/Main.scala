@@ -63,9 +63,11 @@ class Main(address: String) extends Game {
     })
 
     rm.addRoute(gameWin, anyway => {
+      shared.stopNetwork()
       t0
     })
     rm.addRoute(gameOver, anyway => {
+      shared.stopNetwork()
       t0
     })
 

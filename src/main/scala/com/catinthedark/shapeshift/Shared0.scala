@@ -2,6 +2,7 @@ package com.catinthedark.shapeshift
 
 import java.net.URI
 
+import com.catinthedark.lib.Deferred
 import com.catinthedark.shapeshift.network.{NetworkControl, NetworkWSControl}
 
 class Shared0(
@@ -16,9 +17,11 @@ class Shared0(
       networkControlThread.interrupt()
       networkControlThread = null
     }
+    println("Network stopped")
   }
   
   def start(): Unit = {
+    stopNetwork()
     networkControlThread = new Thread(networkControl)
     networkControlThread.start()
     println("Network thread started")
