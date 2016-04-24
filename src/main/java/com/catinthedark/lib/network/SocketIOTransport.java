@@ -19,7 +19,7 @@ public final class SocketIOTransport extends NetworkTransport {
 
         final IO.Options options = new IO.Options();
         options.forceNew = true;
-        options.reconnection = false;
+        options.reconnection = true;
 
         onConnect = objects -> System.out.println("Connected to server");
         onDisconnect = objects -> System.out.println("Disconnected from server");
