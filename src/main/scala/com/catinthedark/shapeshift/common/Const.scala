@@ -89,6 +89,7 @@ object Const extends ConstDelegate {
       val shotDispersionAngle: Float
       val shotColdown: Float
       val tracesLiveTime: Float
+      val canJump: Boolean
     }
 
     object hunterBalance extends playerBalance {
@@ -98,6 +99,7 @@ object Const extends ConstDelegate {
       override val viewAngle: Float = 2f
       override val shotColdown: Float = 1.3f
       override val tracesLiveTime: Float = 3f
+      override val canJump: Boolean = false
     }
 
     object wolfBalance extends playerBalance {
@@ -107,6 +109,7 @@ object Const extends ConstDelegate {
       override val shotDispersionAngle: Float = 60
       override val shotColdown: Float = 1.5f
       override val tracesLiveTime: Float = 6f
+      override val canJump: Boolean = true
     }
   }
 

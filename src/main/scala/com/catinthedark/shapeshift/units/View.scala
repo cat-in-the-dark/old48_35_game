@@ -37,6 +37,7 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
   val magicBatch = new MagicSpriteBatch(Const.debugEnabled())
   val playerBatch = new MagicSpriteBatch(Const.debugEnabled())
 
+  val jumpBar = new HudBar((Const.Balance.jumpCoolDown * 100).toInt)
   val hudBatch = new ShapeRenderer()
 
   magicBatch.setShader(clipShader)
@@ -306,9 +307,9 @@ abstract class View(val shared: Shared1) extends SimpleUnit with Deferred {
 
     lastJump += delta * 7
 
-    if(shared.player.canJump) {
+    if(shared.player.balance.canJump) {
       hudBatch.begin(ShapeType.Filled)
-      new HudBar((Const.Balance.jumpCoolDown * 100).toInt).render(hudBatch, (100 / Const.Balance.jumpCoolDown * lastJump).toInt,
+      jumpBar.render(hudBatch, (100 / Const.Balance.jumpCoolDown * lastJump).toInt,
         new Vector2(0, 0), new Vector2(Const.Projection.width, 20))
       hudBatch.end()
     }
