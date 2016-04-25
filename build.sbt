@@ -1,6 +1,6 @@
 name := "za_bochok_ldjam_35"
 
-version := "2.5"
+version := "2.5.1"
 
 scalaVersion := "2.11.7"
 
